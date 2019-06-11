@@ -1,0 +1,81 @@
+body {
+  display: flex;
+  justify-content: center;
+}
+
+#main {
+  display: flex;
+  justify-content: space-around;
+  border-style: solid;
+}
+
+#left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#top_picto {
+  display: flex;
+  background-color: white;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+}
+
+#viz {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+}
+
+#map {
+}
+
+#legend {
+	background-color: orange
+}
+
+#chrono {
+  background-color: black;
+}
+
+#right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+#color_map_button {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#picto_button {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#expert {
+  border-style: solid;
+}
+
+div.tooltip {	
+    position: absolute;			
+    text-align: left;			
+    width: 100px;					
+    height: 28px;					
+    padding: 2px;				
+    font: 6px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
