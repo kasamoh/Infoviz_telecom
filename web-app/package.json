@@ -1,0 +1,42 @@
+{
+  "name": "web-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "d3": "^5.9.2",
+    "d3-legend": "^1.0.0",
+    "d3-scale-chromatic": "^1.3.3",
+    "d3-svg-legend": "^2.25.6",
+    "plotly.js": "1.45.3",
+    "react": "^16.8.6",
+    "react-bootstrap": "^1.0.0-beta.9",
+    "react-dom": "^16.8.6",
+    "react-markdown": "^4.0.8",
+    "react-plotly.js": "2.3.0",
+    "react-scripts": "3.0.1",
+    "react-syntax-highlighter": "^10.3.0",
+    "typeface-roboto": "0.0.54"
+  },
+  "scripts": {
+    "start": "react-scripts start --max_old_space_size=8192",
+    "build": "react-scripts build --max_old_space_size=8192",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
