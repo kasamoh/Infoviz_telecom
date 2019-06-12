@@ -39,18 +39,36 @@
 }
 #viz {
   width:100%;
-  height:70%;
+  height:600px;
 }
 #legend {
-  background-color: orange;
-  width:100%;
-  height:7%
+  color: orange;
+  border: solid 1px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width:80%;
+  height:90px;
+  line-height: 90px;
+  margin-left:10%;
+  padding-right:10%;
+  padding-top: 5px;
+  margin-bottom: 5px;
 }
 
 #chrono {
-  background-color: black;
-  width:100%;
-  height:7%
+  color: black;
+  border: solid 1px;
+  align-items: center;
+  justify-content: space-around;
+  width:80%;
+  height:90px;
+  line-height: 90px;
+  margin-left:10%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
 }
 #tabs{
   width:69%;
@@ -95,4 +113,12 @@
   border-radius: 28px;
   width: 80%;
   background: #9ef1f2 ;
+}
+.rangeslider__label-item{
+  transform: translate3d(0, -10%, 0)!important;
+}
+.rangeslider{
+  width:80%;
+  min-width: 100px;
+  max-width: 400px;
 }

@@ -26,10 +26,12 @@ class HelloFrance extends React.Component{
     render() {
         return (
             <div>
+                <h3>Year: {this.props.year}</h3>
                 <svg
                     ref={node => this.node = node}
                     width={this.props.width}
-                    height={this.props.height}/>
+                    height={this.props.height}
+                />
                 <div
                     id={"tooltip-div"}
                     ref={node => this.tooltipNode = node}/>

@@ -1,4 +1,5 @@
 import React from "react";
+import Plotly from "plotly.js";
 import Plot from 'react-plotly.js';
 
 class SliderExample extends React.Component{
