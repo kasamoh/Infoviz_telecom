@@ -4,10 +4,8 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import franceLogo from "./img/france.png"
 import graphLogo from "./img/graph.png"
-//import HelloFrance from "./components/HelloFrance/HelloFrance";
-import SliderExample from "./components/SliderExample/SliderExample";
+import HelloFrance from "./components/HelloFrance/HelloFrance";
 
-//                     <HelloFrance id={"grapho"} width={600} height={600}/>
 function App() {
   return (
     <div className="App">
@@ -29,7 +27,7 @@ function App() {
                     </Nav.Item>
                 </Nav>
                 <div id="viz" className={"ab-content"}>
-                    <SliderExample/>
+                    <HelloFrance id={"grapho"} width={600} height={600}/>
                 </div>
                 <div id="legend">
                 </div>
