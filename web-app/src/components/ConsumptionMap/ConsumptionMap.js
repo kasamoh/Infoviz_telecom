@@ -57,7 +57,7 @@ class ConsumptionMap extends React.Component {
         const ConsumptionArray = Object.values(regionsConsumption).flatMap(Object.values);
         const meanConsumption = median(ConsumptionArray);
         const colorInterpolar = scaleSequential()
-            .domain([min(ConsumptionArray), max(ConsumptionArray)])
+            .domain([max(ConsumptionArray), min(ConsumptionArray)])
             .interpolator(interpolateOrRd);
 
         return Object.keys(regionsConsumption).map(function(key) {
@@ -95,7 +95,7 @@ class ConsumptionMap extends React.Component {
         const ConsumptionArray = Object.values(regionsConsumption).flatMap(Object.values);
         const meanConsumption = median(ConsumptionArray);
         const colorInterpolar = scaleSequential()
-            .domain([min(ConsumptionArray), max(ConsumptionArray)])
+            .domain([max(ConsumptionArray), min(ConsumptionArray)])
             .interpolator(interpolateOrRd);
 
         const updates = {};
