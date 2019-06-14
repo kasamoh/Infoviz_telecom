@@ -1,11 +1,7 @@
-import {d3} from "plotly.js";
-import d3Legend from "d3-svg-legend";
+import {d3} from "../../Plotly";
 
 const plotGraphFrance = (data, nodeId, width, height) => {
     console.log(data, nodeId, width, height);
-    const w = width;
-    const h = height;
-    let dataset = [];
     let root = data;
 
     //Create SVG element
