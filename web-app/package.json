@@ -2,6 +2,7 @@
   "name": "web-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://radpc.hopto.org/igr204",
   "dependencies": {
     "bootstrap": "^4.3.1",
     "d3": "^5.9.2",
