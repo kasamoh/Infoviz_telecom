@@ -1,10 +1,11 @@
 import React from 'react';
 import {min, max, interpolateOrRd, median} from "d3";
 import {scaleSequential} from "d3-scale";
-import Plot from 'react-plotly.js';
 import Plotly from "../../Plotly";
+import createPlotlyComponent from "react-plotly.js/factory";
 import regions from "../../data/regions"
 import regionsConsumption from "../../data/regions_consumption"
+const Plot = createPlotlyComponent(Plotly);
 
 class ConsumptionMap extends React.Component {
 
