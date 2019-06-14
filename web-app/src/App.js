@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Container from "react-bootstrap/Container";
+import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import franceLogo from "./img/france.png"
 import graphLogo from "./img/graph.png"
@@ -8,8 +9,10 @@ import Slider from 'react-rangeslider'
 import 'react-rangeslider/lib/index.css'
 import ConsumptionMap from "./components/ConsumptionMap/ConsumptionMap";
 import Button from "react-bootstrap/Button";
+import GraphFrance from "./components/GraphFrance/GraphFrance";
 
 const MIN_YEAR = 2011, MAX_YEAR=2017;
+const MAP_KEY = "map", GRAPH_KEY="graph";
 
 class App extends React.Component {
     constructor(props) {
@@ -17,10 +20,17 @@ class App extends React.Component {
         this.state = {
             year: MIN_YEAR,
             chronoButtonText: "Play",
-            playing: false
+            playing: false,
+            key:MAP_KEY
         };
         this.onYearChange = this.onYearChange.bind(this);
+        this.onNavSelect = this.onNavSelect.bind(this);
         this.onChronoButton = this.onChronoButton.bind(this);
+    }
+
+    onNavSelect(eventKey){
+        console.log(eventKey);
+        this.setState({key:eventKey})    ;
     }
 
     onYearChange(newYear){
@@ -63,25 +73,38 @@ class App extends React.Component {
                 </header>
                 <Container id={"app-container"}>
                     <div id={"tabs"}>
-                        <Nav variant="tabs" defaultActiveKey="/home">
+                        <Nav variant="tabs" onSelect={this.onNavSelect}>
                             <Nav.Item>
-                                <Nav.Link href="/home">
+                                <Nav.Link eventKey={MAP_KEY} >
                                     <img src={franceLogo} alt={"france"} width={"auto"} height={50}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="/graph">
+                                <Nav.Link eventKey={GRAPH_KEY} >
                                     <img src={graphLogo} alt={"graph"} width={"auto"} height={50}/>
                                 </Nav.Link>
                             </Nav.Item>
                         </Nav>
-                        <div id="viz" className={"ab-content"}>
-                            <ConsumptionMap
-                                id={"grapho"}
-                                width={600}
-                                height={600}
-                                year={this.state.year}
-                                />
+                        <div id="viz" className={"tab-content"}>
+                            <Tab.Container activeKey={this.state.key}>
+                                <Tab.Content>
+                                    <Tab.Pane eventKey={MAP_KEY}>
+                                        <ConsumptionMap
+                                            id={"grapho"}
+                                            width={600}
+                                            height={600}
+                                            year={this.state.year}
+                                        />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey={GRAPH_KEY}>
+                                        <GraphFrance
+                                            width={600}
+                                            height={600}
+                                            year={this.state.year}
+                                        />
+                                    </Tab.Pane>
+                                </Tab.Content>
+                            </Tab.Container>
                         </div>
                         <div id="legend">
                             The legend will be here.
