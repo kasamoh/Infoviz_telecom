@@ -2,7 +2,7 @@ import React from 'react';
 import {min, max, interpolateOrRd, median} from "d3";
 import {scaleSequential} from "d3-scale";
 import Plot from 'react-plotly.js';
-import Plotly from "plotly.js";
+import Plotly from "../../Plotly";
 import regions from "../../data/regions"
 import regionsConsumption from "../../data/regions_consumption"
 
