@@ -30,7 +30,6 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
 
     const deps = svg.append("g");
     const colors = ['#d4eac7', '#c6e3b5', '#b7dda2', '#a9d68f', '#9bcf7d', '#8cc86a', '#7ec157', '#77be4e', '#70ba45', '#65a83e', '#599537', '#4e8230', '#437029', '#385d22', '#2d4a1c', '#223815'];
-    var year = selectedyear;
 
     console.log("map france !!!!!!!!!!!!");
     console.log(selectedyear);
@@ -69,11 +68,21 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
             .attr("d", path);
 
         const productionValues = csv.map(e => e.Production_totale);
+        const maxProduction = d3.max(productionValues), minProduction = d3.min(productionValues);
+
+        const nbrTicks = 6;
+        var quantileTicks = d3.scaleQuantile()
+            .domain([minProduction, maxProduction])
+            .range(d3.range(nbrTicks));
+
+        const quantileStep = Math.ceil((maxProduction - minProduction) / nbrTicks);
 
         var quantile = d3.scaleQuantile()
-            .domain([d3.min(productionValues), d3.max(productionValues)])
+            .domain([minProduction, maxProduction])
             .range(d3.range(colors.length));
-        //console.log(quantile)
+
+        console.log(minProduction, maxProduction,quantileStep);
+        console.log(d3.range(minProduction, maxProduction,quantileStep));
 
         //////////////////////////////////////// legend /////////////////////////
 
@@ -83,36 +92,35 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
             .attr('id', 'legend');
 
         legend.selectAll('.colorbar')
-            .data(d3.range(9))
+            .data(d3.range(minProduction, maxProduction,quantileStep))
             .enter().append('svg:rect')
             .attr('y', function (d) {
-                return d * 20 + 'px';
+                console.log("d:", quantileTicks(d));
+                return quantileTicks(d) * 20 + 'px';
             })
             .attr('height', '20px')
             .attr('width', '20px')
             .attr('x', '0px')
             .attr("class", function (d) {
-                return "q" + d + "-9";
+                return "q" + quantileTicks(d) + "-9";
             })
             .style("fill", function (d) {
-                return colors[d];
+                return colors[quantile(d)];
             });
 
         var legendScale = d3.scaleLinear()
-            .domain([0, d3.max(csv, function (e) {
-                return +e.Production_totale;
-            })])
-            .range([0, 9 * 20]);
+            .domain([d3.min(productionValues), d3.max(productionValues)])
+            .range([0, nbrTicks * 20]);
 
-        var legendAxis = svg.append("g")
+        svg.append("g")
             .attr('transform', 'translate(550, 150)')
-            .call(d3.axisRight(legendScale).ticks(6));
+            .call(d3.axisRight(legendScale).ticks(nbrTicks));
 
 
         //////////////////////////////////////// tooltip /////////////////////////
 
         var div = d3.select("body").append("div")
-            .attr("className", "tooltip")
+            .attr("class", "tooltip")
             .style("opacity", 0);
 
 
