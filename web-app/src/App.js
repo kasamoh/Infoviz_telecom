@@ -12,9 +12,10 @@ import Button from "react-bootstrap/Button";
 import GraphFrance from "./components/GraphFrance/GraphFrance";
 import MapFrance from "./components/MapFrance/MapFrance";
 import BarChart from "./components/BarChart/BarChart";
+import {PRICE, PRODUCTION, CONSUMPTION, CO2_EMISSION} from "./constant/DataTypes"
+import {MAP_TAB, GRAPH_TAB} from "./constant/TabKeys"
 
 const MIN_YEAR = 2013, MAX_YEAR=2017;
-const MAP_KEY = "map", GRAPH_KEY="graph";
 
 class App extends React.Component {
     constructor(props) {
@@ -23,8 +24,9 @@ class App extends React.Component {
             year: MIN_YEAR,
             chronoButtonText: "Play",
             playing: false,
-            key:MAP_KEY,
-            region:0
+            tab:MAP_TAB,
+            region:0,
+            dataType: CONSUMPTION
         };
         this.onYearChange = this.onYearChange.bind(this);
         this.onNavSelect = this.onNavSelect.bind(this);
@@ -34,7 +36,7 @@ class App extends React.Component {
 
     onNavSelect(eventKey){
         console.log(eventKey);
-        this.setState({key:eventKey})    ;
+        this.setState({tab:eventKey})    ;
     }
 
     onYearChange(newYear){
@@ -49,7 +51,7 @@ class App extends React.Component {
             console.log("Will play");
             this.setState({chronoButtonText:"Stop", playing:true});
             const chronoInterval = setInterval(() => {
-                const nextYear = (this.state.year + 1- MIN_YEAR)% 7 + MIN_YEAR;
+                const nextYear = (this.state.year + 1- MIN_YEAR)% (MAX_YEAR - MIN_YEAR + 1) + MIN_YEAR;
                 if(nextYear === MIN_YEAR){
                     clearInterval(this.state.chronoInterval);
                     this.setState({chronoButtonText:"Play", playing:false, year:MIN_YEAR, chronoInterval:undefined});
@@ -64,16 +66,16 @@ class App extends React.Component {
         }
     }
     onRegionChange(newRegion){
-        console.log("State new region",newRegion)
+        console.log("State new region",newRegion);
         this.setState({region: newRegion});
     }
     render() {
         const labels = {};
-        [...Array(7).keys()].forEach(i => {
+        [...Array(MAX_YEAR - MIN_YEAR + 1).keys()].forEach(i => {
             const j = i+MIN_YEAR;
             labels[j] = j.toString()
         } );
-        console.log("App.js render called");
+        console.log("App.js render called", this.state);
         return (
             <div className="App">
                 <header>
@@ -83,20 +85,22 @@ class App extends React.Component {
                     <div id={"tabs"}>
                         <Nav variant="tabs" onSelect={this.onNavSelect}>
                             <Nav.Item>
-                                <Nav.Link eventKey={MAP_KEY} >
+                                <Nav.Link eventKey={MAP_TAB} >
                                     <img src={franceLogo} alt={"france"} width={"auto"} height={50}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey={GRAPH_KEY} >
+                                <Nav.Link eventKey={GRAPH_TAB} >
                                     <img src={graphLogo} alt={"graph"} width={"auto"} height={50}/>
                                 </Nav.Link>
                             </Nav.Item>
                         </Nav>
                         <div id="viz" className={"tab-content"}>
-                            <Tab.Container activeKey={this.state.key}>
+                            <Tab.Container
+                                activeKey={this.state.tab}
+                                onSelect={this.onNavSelect}>
                                 <Tab.Content>
-                                    <Tab.Pane eventKey={MAP_KEY}>
+                                    <Tab.Pane eventKey={MAP_TAB}>
                                         <MapFrance
                                             id={"grapho"}
                                             width={600}
@@ -105,7 +109,7 @@ class App extends React.Component {
                                             onRegionChange={this.onRegionChange}
                                         />
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey={GRAPH_KEY}>
+                                    <Tab.Pane eventKey={GRAPH_TAB}>
                                         <GraphFrance
                                             width={600}
                                             height={600}
