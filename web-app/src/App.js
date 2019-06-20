@@ -151,7 +151,7 @@ class App extends React.Component {
                             <button type="button" className="picto">Consumption Main Source</button>
                         </div>
                         <div id="expert" name="expert">
-                        <svg class='barchart'>
+                        <svg className='barchart'>
                            
                            <BarChart
                                   id={"barchart"}
