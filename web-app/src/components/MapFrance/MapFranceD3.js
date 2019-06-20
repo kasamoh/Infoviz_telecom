@@ -39,12 +39,17 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
     promises.push(region);
     promises.push(d3.csv(data));
 
+    const plot = {
+
+    };
+
     Promise.all(promises).then(function (values) {
 
 
         const geojson = values[0]; // Récupération de la première promesse : le contenu du fichier JSON
         const csv = values[1]; // Récupération de la deuxième promesse : le contenu du fichier csv
 
+        const availableRegion = csv.map(e => e.code);
 
         console.log("data !!!!!!!!!!!!");
         console.log(csv);
@@ -55,7 +60,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
 
         var features = deps
             .selectAll("path")
-            .data(geojson.features)
+            .data(geojson.features.filter(f => availableRegion.includes(f.properties.code)))
             .enter()
             .append("path")
             .attr('id', function (d) {
@@ -63,11 +68,11 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
             })
             .attr("d", path);
 
+        const productionValues = csv.map(e => e.Production_totale);
+
         var quantile = d3.scaleQuantile()
-            .domain([0, d3.max(csv, function (e) {
-                return (+e.Production_totale) + 1;
-            })])
-            .range(d3.range(9));
+            .domain([d3.min(productionValues), d3.max(productionValues)])
+            .range(d3.range(colors.length));
         //console.log(quantile)
 
         //////////////////////////////////////// legend /////////////////////////
@@ -117,7 +122,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
 //        console.log(e);
             d3.select("#d" + e.code)
                 .filter(function (d) {
-                    return e.annee == selectedyear
+                    return e.annee === selectedyear
                 })  // <== This line
                 .style("stroke", "white")
                 .style("opacity", "1")
@@ -136,15 +141,15 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
                         .duration(200)
                         .style("opacity", .9);
                     d3.select("#d" + e.code)
-//                        .clone(true)
-//                        .attr("id", "region-hover")
-//                        .style("fill", function (d) {
-//                            return colors[quantile(+e.Production_totale)];
-//                        })
+                    //                        .clone(true)
+                    //                        .attr("id", "region-hover")
+                    //                        .style("fill", function (d) {
+                    //                            return colors[quantile(+e.Production_totale)];
+                    //                        })
                         .style("stroke-width", "2")
                         .style("stroke", "black")
                         .style("opacity", 0.8)
-                        .raiseToTop();
+                        .raise();
 
                     div.html("<b>Région : </b>" + e.NOM_REGION + "<br>"
                         + "<b>Production : </b>" + e.Production_totale + "<br>")
@@ -178,12 +183,32 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
                 });
         });
 
+        const updateYear = (newYear) => {
+            console.log(newYear);
+            csv.forEach(function (e, i) {
+//                e.annee = +e.annee;
+                d3.select("#d" + e.code)
+                    .filter(function (d) {
+                        return e.annee === newYear
+                    })  // <== This line
+                    .style("fill", function (d) {
+                        return colors[quantile(+e.Production_totale)];
+                    })
+                    .attr("class", function (d) {
+                        return "region q" + quantile(+e.Production_totale) + "-9";
+                    });
+            });
+        };
 
         d3.select("select").on("change", function () {
             d3.selectAll("svg").attr("class", this.value);
         });
-    });
 
+        plot.csv = csv;
+        plot.updateYear = updateYear;
+        plot.ready = true;
+    });
+    return plot;
 };
 
 export default plotMapFrance;

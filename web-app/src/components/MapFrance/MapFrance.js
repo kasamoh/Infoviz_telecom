@@ -17,18 +17,23 @@ class MapFrance extends React.Component{
     componentDidMount() {
         if(this.state.data){
             console.log("calling plot");
-            plotMapFrance(this.state.data,this.state.region,this.props.year,this.node, 600, 600, this.props.onRegionChange)
+            const plot = plotMapFrance(this.state.data,this.state.region,this.props.year,this.node, 600, 600, this.props.onRegionChange)
+            this.setState({plot: plot});
         }
     }
 
     componentDidUpdate() {
         if(this.state.data){
-            console.log("calling plot");
-            plotMapFrance(this.state.data,this.state.region,this.props.year,this.node, 600, 600, this.props.onRegionChange)
+            console.log("calling update plot");
+            console.log(this.state.plot.updateYear);
+            if(this.state.plot && this.state.plot.ready){
+                this.state.plot.updateYear(this.props.year);
+            }
+//            plotMapFrance(this.state.data,this.state.region,this.props.year,this.node, 600, 600, this.props.onRegionChange)
         }
     }
     render() {
-        console.log("rendering",this.props.year)
+        console.log("rendering",this.props.year);
         return (
             <div>
                 <svg
