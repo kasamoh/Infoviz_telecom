@@ -122,3 +122,48 @@
   min-width: 100px;
   max-width: 400px;
 }
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  color: black;
+  width: 275px;
+  height: 77px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: grey;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+
+.rect {
+  width:120px;
+  height:80px;
+}
+.brighter {
+  border:1px solid black;
+}
+.darker {
+  border:1px solid white;
+}
+
+.bar {
+  fill: rgb(88, 180, 70);
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.toolTip {
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #6F257F;
+  padding: 14px;
+  text-align: center;
+}

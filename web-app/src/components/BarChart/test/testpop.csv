@@ -1,0 +1,37 @@
+﻿annee,code,NOM_REGION,CODE_DEPT,NOM_DEPT,NB_ARRONDS,NB_CANTONS,NB_COMMUNES,POP
+2012,84,Rhône-Alpes,1,Ain,4,43,419,614331
+2012,27,Franche-Comté,25,Doubs,3,35,594,542509
+2012,53,Bretagne,22,Côtes-d'Armor,4,52,373,612383
+2012,24,Centre,18,Cher,3,35,290,319600
+2012,44,Grand-est,25,Doubs,3,35,594,542509
+2012,32,Haut-de-France,59,Nord,6,79,650,2617939
+2012,11,Île-de-France,75,Paris,1,20,1,2268265
+2012,28,Normandie,2,Aisne,5,42,816,555094
+2012,75,Aquitaine,24,Dordogne,4,50,557,426607
+2012,76,Occitanie,8,Ardennes,4,37,463,291678
+2012,93,Provence-Alpes-Côte d'Azur,4,Alpes-de-Haute-Provence,4,30,200,165155
+2012,52,Pays de la Loire,44,Loire-Atlantique,4,59,221,1317685
+2013,84,Rhône-Alpes,1,Ain,4,43,419,214331
+2013,27,Franche-Comté,25,Doubs,3,35,594,242509
+2013,53,Bretagne,22,Côtes-d'Armor,4,52,373,112383
+2013,24,Centre,18,Cher,3,35,290,819600
+2013,44,Grand-est,25,Doubs,3,35,594,42509
+2013,32,Haut-de-France,59,Nord,6,79,650,617939
+2013,11,Île-de-France,75,Paris,1,20,1,2968265
+2013,28,Normandie,2,Aisne,5,42,816,55094
+2013,75,Aquitaine,24,Dordogne,4,50,557,826607
+2013,76,Occitanie,8,Ardennes,4,37,463,31678
+2013,93,Provence-Alpes-Côte d'Azur,4,Alpes-de-Haute-Provence,4,30,200,175155
+2013,52,Pays de la Loire,44,Loire-Atlantique,4,59,221,1917685
+2014,84,Rhône-Alpes,1,Ain,4,43,419,914331
+2014,27,Franche-Comté,25,Doubs,3,35,594,542509
+2014,53,Bretagne,22,Côtes-d'Armor,4,52,373,182383
+2014,24,Centre,18,Cher,3,35,290,119600
+2014,44,Grand-est,25,Doubs,3,35,594,142509
+2014,32,Haut-de-France,59,Nord,6,79,650,217939
+2014,11,Île-de-France,75,Paris,1,20,1,2568265
+2014,28,Normandie,2,Aisne,5,42,816,59094
+2014,75,Aquitaine,24,Dordogne,4,50,557,1026607
+2014,76,Occitanie,8,Ardennes,4,37,463,91678
+2014,93,Provence-Alpes-Côte d'Azur,4,Alpes-de-Haute-Provence,4,30,200,15155
+2014,52,Pays de la Loire,44,Loire-Atlantique,4,59,221,4917685

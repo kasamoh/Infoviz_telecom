@@ -1,0 +1,25 @@
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    color: black;
+    width: 275px;
+    height: 77px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: grey;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+
+.rect {
+    width:120px;
+    height:80px;
+}
+.brighter {
+    border:1px solid black;
+}
+.darker {
+    border:1px solid white;
+}

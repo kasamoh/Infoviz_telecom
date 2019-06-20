@@ -1,0 +1,164 @@
+<html>
+<head>
+    <title>A D3 map</title>
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+    <style>
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            color: black;
+            width: 275px;
+            height: 77px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: grey;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+
+        .rect {
+            width:120px;
+            height:80px;
+        }
+        .brighter {
+            border:1px solid black;
+        }
+        .darker {
+            border:1px solid white;
+        }
+
+        </style>
+
+
+
+</head>
+<body>
+
+    <div id='map'></div>
+
+
+    
+<script>
+
+
+//https://bl.ocks.org/JulienAssouline/04d96969efe0c9fb80a9fcd8a2b53d2c
+const width = 700, height = 550;
+
+const path = d3.geoPath();
+
+const projection = d3.geoConicConformal() // Lambert-93
+    .center([2.454071, 46.279229]) // Center on France
+    .scale(2600)
+    .translate([width / 2 - 50, height / 2]);
+
+path.projection(projection);
+
+const svg = d3.select('#map').append("svg")
+    .attr("id", "svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("class", "Blues");
+
+const deps = svg.append("g");
+const  colors = ['#d4eac7', '#c6e3b5', '#b7dda2', '#a9d68f', '#9bcf7d', '#8cc86a', '#7ec157', '#77be4e', '#70ba45', '#65a83e', '#599537', '#4e8230', '#437029', '#385d22', '#2d4a1c', '#223815'];
+
+var promises = [];
+promises.push(d3.json('departments.json'));
+promises.push(d3.csv("population.csv"));
+
+Promise.all(promises).then(function(values) {
+    console.log(values)
+    const geojson = values[0]; // Récupération de la première promesse : le contenu du fichier JSON
+    const csv = values[1]; // Récupération de la deuxième promesse : le contenu du fichier csv
+
+    var color_imp = d3.scaleThreshold()
+            .domain([0, 1688, 206684, 747204.800, 3652593.657, 1000000000, 2338271127])
+            .range(["#ede9f3", "#cbbedd", "#a993c7", "#8767b0", "#653c9a", "#54278f", "#431f72"]);
+    console.log(geojson)
+    var features = deps
+        .selectAll("path")
+        .data(geojson.features)
+        .enter()
+        .append("path")
+        .attr('id', function(d) {return "d" + d.properties.CODE_DEPT;})
+        .attr("d", path);
+    
+        // Ici on insèrera tout le code qui va suivre dans cette partie.
+    var quantile = d3.scaleQuantile()
+    .domain([0, d3.max(csv, function(e) { return   (+e.POP)+1; })])
+    .range(d3.range(9));
+    console.log(quantile)
+
+    var legend = svg.append('g')
+    .attr('transform', 'translate(525, 150)')
+    .attr('id', 'legend');
+
+    legend.selectAll('.colorbar')
+    .data(d3.range(9))
+    .enter().append('svg:rect')
+        .attr('y', function(d) { return d * 20 + 'px'; })
+        .attr('height', '20px')
+        .attr('width', '20px')
+        .attr('x', '0px')
+        .attr("class", function(d) { return "q" + d + "-9"; })
+        .style("fill", function(d) { return colors[d]; });
+
+    var legendScale = d3.scaleLinear()
+    .domain([0, d3.max(csv, function(e) { return +e.POP; })])
+    .range([0, 9 * 20]);  
+
+    var legendAxis = svg.append("g")
+    .attr('transform', 'translate(550, 150)')
+    .call(d3.axisRight(legendScale).ticks(6));
+
+    var div = d3.select("body").append("div")   
+    .attr("class", "tooltip")               
+    .style("opacity", 0);
+
+    csv.forEach(function(e,i) {
+     //   console.log(e.POP);
+    d3.select("#d" + e.CODE_DEPT)
+    .style("stroke","white")
+        .style("opacity","1")
+    .style("fill", function(d) { return colors[quantile(+e.POP)]; })
+    //.style("fill", "#9966cc")
+        .attr("class", function(d) { return "department q" + quantile(+e.POP) + "-9"; })
+        .on("mouseover", function(d) {
+            div.transition()        
+                .duration(200)      
+                .style("opacity", .9);
+
+             d3.select("#d" + e.CODE_DEPT)
+                 .style("fill", function(d) { return colors[quantile(+e.POP)]; })
+            .style("stroke","black")
+        .style("opacity",0.8)
+
+            div.html("<b>Région : </b>" + e.NOM_REGION + "<br>"
+                    + "<b>Département : </b>" + e.NOM_DEPT + "<br>"
+                    + "<b>Population : </b>" + e.POP + "<br>")
+                .style("left", (d3.event.pageX + 30) + "px")     
+                .style("top", (d3.event.pageY - 30) + "px");
+        })
+        .on("mouseout", function(d) {
+            d3.select("#d" + e.CODE_DEPT)
+            .style("fill", function(d) { return colors[quantile(+e.POP)]; })
+            .style("stroke","white")
+        .style("opacity","1")
+                //div.style("opacity", 0);
+                div.html("")
+                    .style("left", "-500px")
+                    .style("top", "-500px");
+        });
+        
+});
+
+d3.select("select").on("change", function() {
+    d3.selectAll("svg").attr("class", this.value);
+});
+})
+</script>
+</body>
+
+</html>

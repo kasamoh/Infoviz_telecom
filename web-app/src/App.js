@@ -10,8 +10,10 @@ import 'react-rangeslider/lib/index.css'
 import ConsumptionMap from "./components/ConsumptionMap/ConsumptionMap";
 import Button from "react-bootstrap/Button";
 import GraphFrance from "./components/GraphFrance/GraphFrance";
+import MapFrance from "./components/MapFrance/MapFrance";
+import BarChart from "./components/BarChart/BarChart";
 
-const MIN_YEAR = 2011, MAX_YEAR=2017;
+const MIN_YEAR = 2013, MAX_YEAR=2017;
 const MAP_KEY = "map", GRAPH_KEY="graph";
 
 class App extends React.Component {
@@ -21,11 +23,13 @@ class App extends React.Component {
             year: MIN_YEAR,
             chronoButtonText: "Play",
             playing: false,
-            key:MAP_KEY
+            key:MAP_KEY,
+            region:0
         };
         this.onYearChange = this.onYearChange.bind(this);
         this.onNavSelect = this.onNavSelect.bind(this);
         this.onChronoButton = this.onChronoButton.bind(this);
+        this.onRegionChange = this.onRegionChange.bind(this);
     }
 
     onNavSelect(eventKey){
@@ -59,6 +63,10 @@ class App extends React.Component {
             this.setState({chronoButtonText:"Play", playing:false, chronoInterval:undefined})
         }
     }
+    onRegionChange(newRegion){
+        console.log("State new region",newRegion)
+        this.setState({region: newRegion});
+    }
     render() {
         const labels = {};
         [...Array(7).keys()].forEach(i => {
@@ -89,11 +97,12 @@ class App extends React.Component {
                             <Tab.Container activeKey={this.state.key}>
                                 <Tab.Content>
                                     <Tab.Pane eventKey={MAP_KEY}>
-                                        <ConsumptionMap
+                                        <MapFrance
                                             id={"grapho"}
                                             width={600}
                                             height={600}
                                             year={this.state.year}
+                                            onRegionChange={this.onRegionChange}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey={GRAPH_KEY}>
@@ -138,6 +147,18 @@ class App extends React.Component {
                             <button type="button" className="picto">Consumption Main Source</button>
                         </div>
                         <div id="expert" name="expert">
+                        <svg class='barchart'>
+                           
+                           <BarChart
+                                  id={"barchart"}
+                                  width={600}
+                                  height={600}
+                                  region={this.state.region}
+                                  year={this.state.year}
+                                  onRegionChange={this.onRegionChange}
+                                        />
+                           </svg>
+                           
                             <h2>Expert</h2>
                         </div>
                     </div>
