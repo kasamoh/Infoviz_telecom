@@ -1,10 +1,9 @@
 import {d3} from "../../Plotly";
 
-const plotGraphFrance = (data, nodeId, width, height) => {
+const plotGraphFrance = (data, nodeId, tooltipId, width, height) => {
     console.log(data, nodeId, width, height);
     let root = data;
 
-    //Create SVG element
     var force = d3.layout.force()
         .linkDistance(80)
         .charge(-120)
@@ -16,29 +15,31 @@ const plotGraphFrance = (data, nodeId, width, height) => {
         .attr("width", width)
         .attr("height", height);
 
+    var tooltip = d3.select(tooltipId)
+        .attr("class", "graph-tooltip")
+        .style("opacity", 0);
+
     var link = svg.selectAll(".link"),
         node = svg.selectAll(".node");
+
 
     function update() {
         var nodes = flatten(root),
             links = d3.layout.tree().links(nodes);
 
-        // Restart the force layout.
         force
             .nodes(nodes)
             .links(links)
             .start();
 
-        // Update links.
-        link = link.data(links, function (d) { return d.target.id; });
+        link = link.data(links, function(d) { return d.target.id; });
 
         link.exit().remove();
 
         link.enter().insert("line", ".node")
             .attr("class", "link");
 
-        // Update nodes.
-        node = node.data(nodes, function (d) { return d.id; });
+        node = node.data(nodes, function(d) { return d.id; });
 
         node.exit().remove();
 
@@ -48,23 +49,37 @@ const plotGraphFrance = (data, nodeId, width, height) => {
             .call(force.drag);
 
         nodeEnter.append("circle")
-            .attr("r", function (d) { return Math.sqrt(d.size) / 10 || 4.5; });
+        //.attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; });
+            .attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; })
+            .on('mouseover.graph-tooltip', function(d) {
+                tooltip.transition()
+                    .duration(300)
+                    .style("opacity", .8);
+                tooltip.html(d.value +" MW")
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY + 10) + "px");
+            })
+            .on("mouseout.graph-tooltip", function() {
+                tooltip.transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
 
         nodeEnter.append("text")
             .attr("dy", ".35em")
-            .text(function (d) { return d.name; });
+            .text(function(d) { return d.name ; });
 
         node.select("circle")
             .style("fill", color);
     }
 
     function tick() {
-        link.attr("x1", function (d) { return d.source.x; })
-            .attr("y1", function (d) { return d.source.y; })
-            .attr("x2", function (d) { return d.target.x; })
-            .attr("y2", function (d) { return d.target.y; });
+        link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
 
-        node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+        node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
     }
 
     function color(d) {
@@ -73,7 +88,7 @@ const plotGraphFrance = (data, nodeId, width, height) => {
                 : "#fd8d3c"; // leaf node
     }
 
-    // Toggle children on click.
+
     function click(d) {
         if (d3.event.defaultPrevented) return; // ignore drag
         if (d.children) {
@@ -86,8 +101,6 @@ const plotGraphFrance = (data, nodeId, width, height) => {
         update();
     }
 
-
-    // Returns a list of all nodes under the root.
     function flatten(root) {
         var nodes = [], i = 0;
 
@@ -96,12 +109,39 @@ const plotGraphFrance = (data, nodeId, width, height) => {
             if (!node.id) node.id = ++i;
             nodes.push(node);
         }
-
+        console.log("root:", root)
         recurse(root);
         return nodes;
     }
 
+    function setParents(d, p){
+        d._parent = p;
+        if (d.children) {
+            d.children.forEach(function(e){ setParents(e,d);});
+        } else if (d._children) {
+            d._children.forEach(function(e){ setParents(e,d);});
+        }
+    }
+
+    function collapseAll(d){
+        if (d.children){
+            d.children.forEach(collapseAll);
+            d._children = d.children;
+            d.children = null;
+        }
+        else if (d._childred){
+            d._children.forEach(collapseAll);
+        }
+    }
+
     update();
+    flatten(root);
+    setParents(root, null);
+    collapseAll(root);
+    root.children = root._children;
+    root._children = null;
+    update();
+
 };
 
 export default plotGraphFrance;
