@@ -7,15 +7,17 @@ import franceLogo from "./img/france.png"
 import graphLogo from "./img/graph.png"
 import Slider from 'react-rangeslider'
 import 'react-rangeslider/lib/index.css'
-import ConsumptionMap from "./components/ConsumptionMap/ConsumptionMap";
 import Button from "react-bootstrap/Button";
 import GraphFrance from "./components/GraphFrance/GraphFrance";
 import MapFrance from "./components/MapFrance/MapFrance";
 import BarChart from "./components/BarChart/BarChart";
-import {PRICE, PRODUCTION, CONSUMPTION, CO2_EMISSION} from "./constant/DataTypes"
-import {MAP_TAB, GRAPH_TAB} from "./constant/TabKeys"
+import {CONSUMPTION, datatypes} from "./constant/DataTypes"
+import {GRAPH_TAB, MAP_TAB} from "./constant/TabKeys"
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Dropdown from "react-bootstrap/Dropdown";
 
-const MIN_YEAR = 2013, MAX_YEAR=2017;
+const MIN_YEAR = 2013, MAX_YEAR = 2017;
 
 class App extends React.Component {
     constructor(props) {
@@ -24,57 +26,85 @@ class App extends React.Component {
             year: MIN_YEAR,
             chronoButtonText: "Play",
             playing: false,
-            tab:MAP_TAB,
-            region:0,
-            dataType: CONSUMPTION
+            tab: MAP_TAB,
+            region1: 0,
+            region2: 0,
+            dataType1: datatypes[0],
+            dataType2: datatypes[1]
         };
         this.onYearChange = this.onYearChange.bind(this);
         this.onNavSelect = this.onNavSelect.bind(this);
         this.onChronoButton = this.onChronoButton.bind(this);
-        this.onRegionChange = this.onRegionChange.bind(this);
+        this.onRegion1Change = this.onRegion1Change.bind(this);
+        this.onRegion2Change = this.onRegion2Change.bind(this);
+        this.onDataType1Select = this.onDataType1Select.bind(this);
+        this.onDataType2Select = this.onDataType2Select.bind(this);
     }
 
-    onNavSelect(eventKey){
+    onNavSelect(eventKey) {
         console.log(eventKey);
-        this.setState({tab:eventKey})    ;
+        this.setState({tab: eventKey});
     }
 
-    onYearChange(newYear){
+    onYearChange(newYear) {
         console.log(newYear);
         this.setState({
-            year:newYear
+            year: newYear
         })
     }
-    onChronoButton(){
-        if(!this.state.playing){
+
+    onChronoButton() {
+        if (!this.state.playing) {
             // Play
             console.log("Will play");
-            this.setState({chronoButtonText:"Stop", playing:true});
+            this.setState({chronoButtonText: "Stop", playing: true});
             const chronoInterval = setInterval(() => {
-                const nextYear = (this.state.year + 1- MIN_YEAR)% (MAX_YEAR - MIN_YEAR + 1) + MIN_YEAR;
-                if(nextYear === MIN_YEAR){
+                const nextYear = (this.state.year + 1 - MIN_YEAR) % (MAX_YEAR - MIN_YEAR + 1) + MIN_YEAR;
+                if (nextYear === MIN_YEAR) {
                     clearInterval(this.state.chronoInterval);
-                    this.setState({chronoButtonText:"Play", playing:false, year:MIN_YEAR, chronoInterval:undefined});
+                    this.setState({
+                        chronoButtonText: "Play",
+                        playing: false,
+                        year: MIN_YEAR,
+                        chronoInterval: undefined
+                    });
                 } else {
-                    this.setState({year:nextYear});
+                    this.setState({year: nextYear});
                 }
-            },1000);
-            this.setState({chronoInterval:chronoInterval})
+            }, 1000);
+            this.setState({chronoInterval: chronoInterval})
         } else {
             clearInterval(this.state.chronoInterval);
-            this.setState({chronoButtonText:"Play", playing:false, chronoInterval:undefined})
+            this.setState({chronoButtonText: "Play", playing: false, chronoInterval: undefined})
         }
     }
-    onRegionChange(newRegion){
-        console.log("State new region",newRegion);
-        this.setState({region: newRegion});
+
+    onRegion1Change(newRegion) {
+        console.log("State new region", newRegion);
+        this.setState({region1: newRegion});
     }
+
+    onRegion2Change(newRegion) {
+        console.log("State new region", newRegion);
+        this.setState({region2: newRegion});
+    }
+
+    onDataType1Select(newDataType){
+        console.log("State new DataType1", newDataType);
+        this.setState({dataType1: newDataType});
+    }
+
+    onDataType2Select(newDataType){
+        console.log("State new DataType2", newDataType);
+        this.setState({dataType2: newDataType});
+    }
+
     render() {
         const labels = {};
         [...Array(MAX_YEAR - MIN_YEAR + 1).keys()].forEach(i => {
-            const j = i+MIN_YEAR;
+            const j = i + MIN_YEAR;
             labels[j] = j.toString()
-        } );
+        });
         console.log("App.js render called", this.state);
         return (
             <div className="App">
@@ -85,29 +115,86 @@ class App extends React.Component {
                     <div id={"tabs"}>
                         <Nav variant="tabs" onSelect={this.onNavSelect}>
                             <Nav.Item>
-                                <Nav.Link eventKey={MAP_TAB} >
+                                <Nav.Link eventKey={MAP_TAB}>
                                     <img src={franceLogo} alt={"france"} width={"auto"} height={50}/>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey={GRAPH_TAB} >
+                                <Nav.Link eventKey={GRAPH_TAB}>
                                     <img src={graphLogo} alt={"graph"} width={"auto"} height={50}/>
                                 </Nav.Link>
                             </Nav.Item>
                         </Nav>
-                        <div id="viz" className={"tab-content"}>
+                        <div id="viz">
                             <Tab.Container
                                 activeKey={this.state.tab}
                                 onSelect={this.onNavSelect}>
                                 <Tab.Content>
                                     <Tab.Pane eventKey={MAP_TAB}>
-                                        <MapFrance
-                                            id={"map-france-1"}
-                                            width={600}
-                                            height={600}
-                                            year={this.state.year}
-                                            onRegionChange={this.onRegionChange}
-                                        />
+                                        <Container>
+                                            <Row>
+                                                <Col>
+                                                    <Col md={4}>
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle variant="success" id="dropdown-datatype-1"
+                                                                         className={"dropdown"}>
+                                                            {this.state.dataType1}
+                                                        </Dropdown.Toggle>
+
+                                                        <Dropdown.Menu onSelect={this.onDataType1Select}>
+                                                            {datatypes.map(
+                                                                dt => (<Dropdown.Item eventKey={dt}>{dt}</Dropdown.Item>)
+                                                            )}
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                    </Col>
+                                                    <MapFrance className="map"
+                                                        id={"map-france-1"}
+                                                        width={500}
+                                                        height={500}
+                                                        year={this.state.year}
+                                                        onRegionChange={this.onRegion1Change}
+                                                    />
+                                                    <BarChart className="histogram"
+                                                        id={"barchart-1"}
+                                                        width={400}
+                                                        height={200}
+                                                        region={this.state.region1}
+                                                        year={this.state.year}
+                                                    />
+                                                </Col>
+                                                <Col>
+                                                    <Col md={4}>
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle variant="success" id="dropdown-datatype-2"
+                                                                             className={"dropdown"}>
+                                                                {this.state.dataType2}
+                                                            </Dropdown.Toggle>
+
+                                                            <Dropdown.Menu onSelect={this.onDataType2Select}>
+                                                                {datatypes.map(
+                                                                    dt => (<Dropdown.Item eventKey={dt}>{dt}</Dropdown.Item>)
+                                                                )}
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    </Col>
+                                                    <MapFrance className="map"
+                                                               id={"map-france-2"}
+                                                               width={500}
+                                                               height={500}
+                                                               year={this.state.year}
+                                                               onRegionChange={this.onRegion2Change}
+                                                    />
+                                                    <BarChart className="histogram"
+                                                              id={"barchart-2"}
+                                                              width={400}
+                                                              height={200}
+                                                              region={this.state.region2}
+                                                              year={this.state.year}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Container>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey={GRAPH_TAB}>
                                         <GraphFrance
@@ -119,13 +206,10 @@ class App extends React.Component {
                                 </Tab.Content>
                             </Tab.Container>
                         </div>
-                        <div id="legend">
-                            The legend will be here.
-                        </div>
                         <div id="chrono">
                             <Button
-                                variant={this.state.playing?"danger":"success"}
-                            onClick={this.onChronoButton}>{this.state.chronoButtonText}</Button>
+                                variant={this.state.playing ? "danger" : "success"}
+                                onClick={this.onChronoButton}>{this.state.chronoButtonText}</Button>
                             <Slider
                                 value={this.state.year}
                                 min={MIN_YEAR}
@@ -134,36 +218,6 @@ class App extends React.Component {
                                 labels={labels}
                                 tooltip={false}
                             />
-                        </div>
-                    </div>
-
-                    <div id="right-panel">
-                        <h2>Color Mapping choice</h2>
-                        <div id="color_map_button">
-                            <button type="button" className="heatmap">Price</button>
-                            <button type="button" className="heatmap">Production</button>
-                            <button type="button" className="heatmap">Consumption</button>
-                            <button type="button" className="heatmap">CO2 Emission</button>
-                        </div>
-                        <h2>Pictogram overlay</h2>
-                        <div id="picto_button">
-                            <button type="button" className="picto">Production Main Source</button>
-                            <button type="button" className="picto">Consumption Main Source</button>
-                        </div>
-                        <div id="expert" name="expert">
-                        <svg className='barchart'>
-                           
-                           <BarChart
-                                  id={"barchart"}
-                                  width={600}
-                                  height={600}
-                                  region={this.state.region}
-                                  year={this.state.year}
-                                  onRegionChange={this.onRegionChange}
-                                        />
-                           </svg>
-                           
-                            <h2>Expert</h2>
                         </div>
                     </div>
                 </Container>

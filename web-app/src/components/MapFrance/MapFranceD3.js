@@ -3,21 +3,21 @@ import * as d3 from "d3";
 
 //https://bl.ocks.org/JulienAssouline/04d96969efe0c9fb80a9fcd8a2b53d2c
 
-const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegionChange) => {
+const plotMapFrance = (data, region, selectedyear, node, width, height, onRegionChange, onReady) => {
 
 
     const path = d3.geoPath();
-
+    const svgId = node.id;
+    console.log(svgId);
     const projection = d3.geoConicConformal() // Lambert-93s
         .center([2.454071, 46.279229]) // Center on France
         .scale(2600)
-        .translate([width / 2 - 50, height / 2]);
+        .translate([width / 2 - 10, height / 2]);
 
     path.projection(projection);
 
 
-    const svg = d3.select(nodeId)//.append("svg")
-        .attr("id", "svg")
+    const svg = d3.select(node)
         .attr("width", width)
         .attr("height", height)
         .attr("class", "Blues");
@@ -38,9 +38,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
     promises.push(region);
     promises.push(d3.csv(data));
 
-    const plot = {
-
-    };
+    const plot = {};
 
     Promise.all(promises).then(function (values) {
 
@@ -49,9 +47,6 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
         const csv = values[1]; // Récupération de la deuxième promesse : le contenu du fichier csv
 
         const availableRegion = csv.map(e => e.code);
-
-        console.log("data !!!!!!!!!!!!");
-        console.log(csv);
 
         var color_imp = d3.scaleThreshold()
             .domain([0, 1688, 206684, 747204.800, 3652593.657, 1000000000, 2338271127])
@@ -63,7 +58,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
             .enter()
             .append("path")
             .attr('id', function (d) {
-                return "d" + d.properties.code;
+                return svgId + "-d" + d.properties.code;
             })
             .attr("d", path);
 
@@ -81,21 +76,17 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
             .domain([minProduction, maxProduction])
             .range(d3.range(colors.length));
 
-        console.log(minProduction, maxProduction,quantileStep);
-        console.log(d3.range(minProduction, maxProduction,quantileStep));
-
         //////////////////////////////////////// legend /////////////////////////
 
 
         var legend = svg.append('g')
-            .attr('transform', 'translate(525, 150)')
-            .attr('id', 'legend');
+            .attr('transform', 'translate('+(width-63)+', 150)')
+            .attr('id', svgId + '-legend');
 
         legend.selectAll('.colorbar')
             .data(d3.range(minProduction, maxProduction,quantileStep))
             .enter().append('svg:rect')
             .attr('y', function (d) {
-                console.log("d:", quantileTicks(d));
                 return quantileTicks(d) * 20 + 'px';
             })
             .attr('height', '20px')
@@ -113,7 +104,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
             .range([0, nbrTicks * 20]);
 
         svg.append("g")
-            .attr('transform', 'translate(550, 150)')
+            .attr('transform', 'translate('+(width-40)+', 150)')
             .call(d3.axisRight(legendScale).ticks(nbrTicks));
 
 
@@ -128,7 +119,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
         csv.forEach(function (e, i) {
             e.annee = +e.annee;
 //        console.log(e);
-            d3.select("#d" + e.code)
+            d3.select("#" + svgId + "-d" + e.code)
                 .filter(function (d) {
                     return e.annee === selectedyear
                 })  // <== This line
@@ -148,7 +139,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
                     div.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    d3.select("#d" + e.code)
+                    d3.select("#" + svgId + "-d" + e.code)
                     //                        .clone(true)
                     //                        .attr("id", "region-hover")
                     //                        .style("fill", function (d) {
@@ -167,7 +158,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
                 .on("click", function (d) {
                     const region = d.properties.code;
                     onRegionChange(region);
-                    d3.select("#d" + e.code)
+                    d3.select("#" + svgId + "-d" + e.code)
                         .style("fill", function (d) {
                             return colors[quantile(+e.Production_totale)];
                         })
@@ -177,7 +168,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
                         .style("top", "-500px");
                 })
                 .on("mouseout", function (d) {
-                    d3.select("#d" + e.code)
+                    d3.select("#" + svgId + "-d" + e.code)
                         .style("fill", function (d) {
                             return colors[quantile(+e.Production_totale)];
                         })
@@ -195,7 +186,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
             console.log(newYear);
             csv.forEach(function (e, i) {
 //                e.annee = +e.annee;
-                d3.select("#d" + e.code)
+                d3.select("#" + svgId + "-d" + e.code)
                     .filter(function (d) {
                         return e.annee === newYear
                     })  // <== This line
@@ -215,6 +206,7 @@ const plotMapFrance = (data, region, selectedyear, nodeId, width, height, onRegi
         plot.csv = csv;
         plot.updateYear = updateYear;
         plot.ready = true;
+        onReady();
     });
     return plot;
 };

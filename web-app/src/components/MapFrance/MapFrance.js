@@ -3,6 +3,7 @@ import Spinner from "react-bootstrap/Spinner";
 import plotMapFrance from "./MapFranceD3";
 import region from "../../data/regions_new"
 import data from '../../data/donnees_economix.csv';
+import './Style.css';
 
 class MapFrance extends React.Component{
     constructor(props){
@@ -18,8 +19,10 @@ class MapFrance extends React.Component{
     componentDidMount() {
         if(this.state.data){
             console.log("calling plot");
-            const plot = plotMapFrance(this.state.data,this.state.region,this.props.year,this.node, 600, 600, this.props.onRegionChange)
-            this.setState({plot: plot});
+            const plot = plotMapFrance(this.state.data,this.state.region,this.props.year,this.node, this.props.width,
+                this.props.height, this.props.onRegionChange, () => {
+                    this.setState({plot: plot});
+                });
         }
     }
 
@@ -30,20 +33,19 @@ class MapFrance extends React.Component{
             if(this.state.plot && this.state.plot.ready){
                 this.state.plot.updateYear(this.props.year);
             }
-//            plotMapFrance(this.state.data,this.state.region,this.props.year,this.node, 600, 600, this.props.onRegionChange)
         }
     }
     render() {
         console.log("rendering",this.props.year);
         return (
-            <div>
+            <div className={this.props.className}>
                 <svg
                     id={this.state.id}
                     ref={node => this.node = node}
                     width={this.props.width}
                     height={this.props.height}
-                    year={this.props.year}/>
-                {(!this.state.data)&&<Spinner animation="border" role="status">
+                />
+                {(!this.state.plot) &&<Spinner className={"spinner"} animation="border" role="status">
                     <span className="sr-only">Loading...</span>
                 </Spinner>}
 

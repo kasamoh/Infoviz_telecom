@@ -18,29 +18,27 @@ class BarChart extends React.Component{
     componentDidMount() {
         if(this.state.data){
             console.log("calling plot");
-            plotBarChart(this.state.data,this.state.regions,this.props.year,this.props.region,this.node, this.props.onRegionChange)
+            plotBarChart(this.state.data,this.state.regions,this.props.year,this.props.region,this.node)
         }
     }
 
     componentDidUpdate() {
         if(this.state.data){
             console.log("calling plot");
-            plotBarChart(this.state.data,this.state.regions,this.props.year,this.props.region,this.node, this.props.onRegionChange)
+            plotBarChart(this.state.data,this.state.regions,this.props.year,this.props.region,this.node)
         }
     }
     render() {
-        console.log("rendering",this.props.region)
+        console.log("rendering",this.props.region);
         return (
-            <div>
+            <div className={this.props.className}>
                 <svg
+                    id={this.props.id}
                     ref={node => this.node = node}
-                    year={this.props.year}
-                    regionselect={this.props.region}
                     />
                 {(!this.state.data)&&<Spinner animation="border" role="status">
                     <span className="sr-only">Loading...</span>
                 </Spinner>}
-
             </div>);
     }
 }

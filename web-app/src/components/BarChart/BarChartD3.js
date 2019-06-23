@@ -1,19 +1,17 @@
 import * as d3 from "d3";
-//import {d3} from "plotly.js"
-//https://bl.ocks.org/JulienAssouline/04d96969efe0c9fb80a9fcd8a2b53d2c
 
-const plotBarChart = (databar,region, selectedyear ,selectedregion,nodeId,onRegionChange) => {
+const plotBarChart = (databar,region, selectedyear ,selectedregion,node) => {
     
 
-    var svg = d3.select(".barchart")  ;
+    var svg = d3.select(node)  ;
     var margin = {
         top: 10,
         right: 20,
         bottom: 20,
         left: 20
-    }
-    var width = 300 - margin.left - margin.right
-    var  height = 150 - margin.top - margin.bottom
+    };
+    var width = 300 - margin.left - margin.right;
+    var  height = 150 - margin.top - margin.bottom;
     svg.selectAll(".g").remove() ;
     svg.selectAll("g").remove() ;
 
