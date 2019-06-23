@@ -8,6 +8,7 @@ class MapFrance extends React.Component{
     constructor(props){
         super(props);
         this.state= {
+            id: this.props.id,
             data: data,
             region:region
            // year :this.props.year
@@ -37,6 +38,7 @@ class MapFrance extends React.Component{
         return (
             <div>
                 <svg
+                    id={this.state.id}
                     ref={node => this.node = node}
                     width={this.props.width}
                     height={this.props.height}

@@ -102,7 +102,7 @@ class App extends React.Component {
                                 <Tab.Content>
                                     <Tab.Pane eventKey={MAP_TAB}>
                                         <MapFrance
-                                            id={"grapho"}
+                                            id={"map-france-1"}
                                             width={600}
                                             height={600}
                                             year={this.state.year}
