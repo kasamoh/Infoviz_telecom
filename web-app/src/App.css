@@ -34,6 +34,9 @@
   height:200px;
   border-style: solid;
 }
+.datatype-select{
+  width:500px;
+}
 .map{
   width:500px;
   height:500px;

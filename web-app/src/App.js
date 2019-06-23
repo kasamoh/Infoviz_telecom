@@ -16,6 +16,7 @@ import {GRAPH_TAB, MAP_TAB} from "./constant/TabKeys"
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Dropdown from "react-bootstrap/Dropdown";
+import Accordion from "react-bootstrap/Accordion";
 
 const MIN_YEAR = 2013, MAX_YEAR = 2017;
 
@@ -27,10 +28,11 @@ class App extends React.Component {
             chronoButtonText: "Play",
             playing: false,
             tab: MAP_TAB,
-            region1: 0,
-            region2: 0,
+            region1: 11,
+            region2: 11,
             dataType1: datatypes[0],
-            dataType2: datatypes[1]
+            dataType2: datatypes[1],
+            showCompare: "1"
         };
         this.onYearChange = this.onYearChange.bind(this);
         this.onNavSelect = this.onNavSelect.bind(this);
@@ -39,6 +41,7 @@ class App extends React.Component {
         this.onRegion2Change = this.onRegion2Change.bind(this);
         this.onDataType1Select = this.onDataType1Select.bind(this);
         this.onDataType2Select = this.onDataType2Select.bind(this);
+        this.onCompareButton = this.onCompareButton.bind(this);
     }
 
     onNavSelect(eventKey) {
@@ -99,6 +102,19 @@ class App extends React.Component {
         this.setState({dataType2: newDataType});
     }
 
+    onCompareButton(){
+        if(this.state.showCompare === "0"){
+            this.setState({
+                showCompare:"1"
+            })
+        } else {
+            this.setState({
+                showCompare:"0"
+            })
+
+        }
+    }
+
     render() {
         const labels = {};
         [...Array(MAX_YEAR - MIN_YEAR + 1).keys()].forEach(i => {
@@ -132,8 +148,10 @@ class App extends React.Component {
                                 <Tab.Content>
                                     <Tab.Pane eventKey={MAP_TAB}>
                                         <Container>
+                                            <Accordion activeKey={this.state.showCompare}>
                                             <Row>
                                                 <Col>
+                                                    <Row className={"datatype-select"}>
                                                     <Col md={4}>
                                                     <Dropdown>
                                                         <Dropdown.Toggle variant="success" id="dropdown-datatype-1"
@@ -141,13 +159,28 @@ class App extends React.Component {
                                                             {this.state.dataType1}
                                                         </Dropdown.Toggle>
 
-                                                        <Dropdown.Menu onSelect={this.onDataType1Select}>
+                                                        <Dropdown.Menu
+                                                            alignRight={true}>
                                                             {datatypes.map(
-                                                                dt => (<Dropdown.Item eventKey={dt}>{dt}</Dropdown.Item>)
+                                                                dt => (<Dropdown.Item
+                                                                    eventKey={dt}
+                                                                    onSelect={this.onDataType1Select}
+                                                                >{dt}</Dropdown.Item>)
                                                             )}
                                                         </Dropdown.Menu>
                                                     </Dropdown>
                                                     </Col>
+                                                    <Col md={{span:4, offset:4}}>
+                                                        <Accordion.Toggle
+                                                            as={Button}
+                                                            variant="link"
+                                                            eventKey="0"
+                                                            onClick={this.onCompareButton}
+                                                        >
+                                                            {this.state.showCompare === "0"?"Hide second map":"Compare in second map"}
+                                                        </Accordion.Toggle>
+                                                    </Col>
+                                                    </Row>
                                                     <MapFrance className="map"
                                                         id={"map-france-1"}
                                                         width={500}
@@ -163,7 +196,10 @@ class App extends React.Component {
                                                         year={this.state.year}
                                                     />
                                                 </Col>
+                                                <Accordion.Collapse eventKey="0">
                                                 <Col>
+
+                                                    <Row className={"datatype-select"}>
                                                     <Col md={4}>
                                                         <Dropdown>
                                                             <Dropdown.Toggle variant="success" id="dropdown-datatype-2"
@@ -171,13 +207,18 @@ class App extends React.Component {
                                                                 {this.state.dataType2}
                                                             </Dropdown.Toggle>
 
-                                                            <Dropdown.Menu onSelect={this.onDataType2Select}>
+                                                            <Dropdown.Menu
+                                                                alignRight={true}>
                                                                 {datatypes.map(
-                                                                    dt => (<Dropdown.Item eventKey={dt}>{dt}</Dropdown.Item>)
+                                                                    dt => (<Dropdown.Item
+                                                                        eventKey={dt}
+                                                                        onSelect={this.onDataType2Select}
+                                                                    >{dt}</Dropdown.Item>)
                                                                 )}
                                                             </Dropdown.Menu>
                                                         </Dropdown>
                                                     </Col>
+                                                    </Row>
                                                     <MapFrance className="map"
                                                                id={"map-france-2"}
                                                                width={500}
@@ -193,7 +234,9 @@ class App extends React.Component {
                                                               year={this.state.year}
                                                     />
                                                 </Col>
+                                            </Accordion.Collapse>
                                             </Row>
+                                            </Accordion>
                                         </Container>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey={GRAPH_TAB}>
