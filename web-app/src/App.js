@@ -11,12 +11,13 @@ import Button from "react-bootstrap/Button";
 import GraphFrance from "./components/GraphFrance/GraphFrance";
 import MapFrance from "./components/MapFrance/MapFrance";
 import BarChart from "./components/BarChart/BarChart";
-import {CONSUMPTION, datatypes} from "./constant/DataTypes"
+import {datatypes} from "./constant/DataTypes"
 import {GRAPH_TAB, MAP_TAB} from "./constant/TabKeys"
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Dropdown from "react-bootstrap/Dropdown";
 import Accordion from "react-bootstrap/Accordion";
+import allData from "./data/all_map"
 
 const MIN_YEAR = 2013, MAX_YEAR = 2017;
 
@@ -156,16 +157,17 @@ class App extends React.Component {
                                                     <Dropdown>
                                                         <Dropdown.Toggle variant="success" id="dropdown-datatype-1"
                                                                          className={"dropdown"}>
-                                                            {this.state.dataType1}
+                                                            {this.state.dataType1.label}
                                                         </Dropdown.Toggle>
 
                                                         <Dropdown.Menu
                                                             alignRight={true}>
                                                             {datatypes.map(
-                                                                dt => (<Dropdown.Item
-                                                                    eventKey={dt}
-                                                                    onSelect={this.onDataType1Select}
-                                                                >{dt}</Dropdown.Item>)
+                                                                (dt,i) => (<Dropdown.Item
+                                                                    key={i}
+                                                                    eventKey={i}
+                                                                    onSelect={() => this.onDataType1Select(dt)}
+                                                                >{dt.label}</Dropdown.Item>)
                                                             )}
                                                         </Dropdown.Menu>
                                                     </Dropdown>
@@ -186,6 +188,8 @@ class App extends React.Component {
                                                         width={500}
                                                         height={500}
                                                         year={this.state.year}
+                                                        data={allData}
+                                                        dataType={this.state.dataType1.key}
                                                         onRegionChange={this.onRegion1Change}
                                                     />
                                                     <BarChart className="histogram"
@@ -193,47 +197,56 @@ class App extends React.Component {
                                                         width={400}
                                                         height={200}
                                                         region={this.state.region1}
+                                                        data={allData}
+                                                        dataType={this.state.dataType1.key}
                                                         year={this.state.year}
                                                     />
                                                 </Col>
                                                 <Accordion.Collapse eventKey="0">
-                                                <Col>
+                                                    {this.state.showCompare && (
+                                                        <Col>
 
-                                                    <Row className={"datatype-select"}>
-                                                    <Col md={4}>
-                                                        <Dropdown>
-                                                            <Dropdown.Toggle variant="success" id="dropdown-datatype-2"
-                                                                             className={"dropdown"}>
-                                                                {this.state.dataType2}
-                                                            </Dropdown.Toggle>
+                                                            <Row className={"datatype-select"}>
+                                                                <Col md={4}>
+                                                                    <Dropdown>
+                                                                        <Dropdown.Toggle variant="success" id="dropdown-datatype-2"
+                                                                                         className={"dropdown"}>
+                                                                            {this.state.dataType2.label}
+                                                                        </Dropdown.Toggle>
 
-                                                            <Dropdown.Menu
-                                                                alignRight={true}>
-                                                                {datatypes.map(
-                                                                    dt => (<Dropdown.Item
-                                                                        eventKey={dt}
-                                                                        onSelect={this.onDataType2Select}
-                                                                    >{dt}</Dropdown.Item>)
-                                                                )}
-                                                            </Dropdown.Menu>
-                                                        </Dropdown>
-                                                    </Col>
-                                                    </Row>
-                                                    <MapFrance className="map"
-                                                               id={"map-france-2"}
-                                                               width={500}
-                                                               height={500}
-                                                               year={this.state.year}
-                                                               onRegionChange={this.onRegion2Change}
-                                                    />
-                                                    <BarChart className="histogram"
-                                                              id={"barchart-2"}
-                                                              width={400}
-                                                              height={200}
-                                                              region={this.state.region2}
-                                                              year={this.state.year}
-                                                    />
-                                                </Col>
+                                                                        <Dropdown.Menu
+                                                                            alignRight={true}>
+                                                                            {datatypes.map(
+                                                                                (dt,i) => (<Dropdown.Item
+                                                                                    eventKey={i}
+                                                                                    key={i}
+                                                                                    onSelect={() => this.onDataType2Select(dt)}
+                                                                                >{dt.label}</Dropdown.Item>)
+                                                                            )}
+                                                                        </Dropdown.Menu>
+                                                                    </Dropdown>
+                                                                </Col>
+                                                            </Row>
+                                                            <MapFrance className="map"
+                                                                       id={"map-france-2"}
+                                                                       width={500}
+                                                                       height={500}
+                                                                       year={this.state.year}
+                                                                       data={allData}
+                                                                       dataType={this.state.dataType2.key}
+                                                                       onRegionChange={this.onRegion2Change}
+                                                            />
+                                                            <BarChart className="histogram"
+                                                                      id={"barchart-2"}
+                                                                      width={400}
+                                                                      height={200}
+                                                                      data={allData}
+                                                                      dataType={this.state.dataType2.key}
+                                                                      region={this.state.region2}
+                                                                      year={this.state.year}
+                                                            />
+                                                        </Col>
+                                                    )}
                                             </Accordion.Collapse>
                                             </Row>
                                             </Accordion>

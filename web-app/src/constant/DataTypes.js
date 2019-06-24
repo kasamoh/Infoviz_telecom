@@ -1,6 +1,26 @@
-const PRICE = "Prix";
-const PRODUCTION = "Production";
-const CONSUMPTION = "Consumption";
-const CO2_EMISSION = "CO2 Emission";
+const AVG_CONSUMPTION = {
+    label: "Average consumption",
+    key: "ConsommationMoyenne"
+};
 
-export const datatypes = [PRICE, PRODUCTION, CONSUMPTION, CO2_EMISSION];
+const TOTAL_CONSUMPTION = {
+    label: "Total consumption",
+    key: "ConsommationTotal"
+};
+
+const EXCESS = {
+    label: "Excess",
+    key: "Excedent"
+};
+
+const PRODUCTION_CO2 = {
+    label: "Production CO2 Emission",
+    key: "ProductionCO2"
+};
+
+const TOTAL_PRODUCTION = {
+    label: "Total production",
+    key: "ProductionTotale"
+};
+
+export const datatypes = [AVG_CONSUMPTION, TOTAL_CONSUMPTION, EXCESS, PRODUCTION_CO2, TOTAL_PRODUCTION];

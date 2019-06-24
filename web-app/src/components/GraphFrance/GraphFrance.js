@@ -15,7 +15,6 @@ class GraphFrance extends React.Component{
 
     componentDidMount() {
         if(this.state.data){
-            console.log("calling plot");
             plotGraphFrance(this.state.data, this.node, this.tooltipNode,600, 600)
         }
     }

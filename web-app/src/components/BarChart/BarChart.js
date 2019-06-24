@@ -8,35 +8,37 @@ class BarChart extends React.Component{
     constructor(props){
         super(props);
         this.state= {
-            data: data,
-            regions:regions,
-            year :this.props.year,
-            regionselect:this.props.region
+            plot:undefined
         };
     }
 
     componentDidMount() {
-        if(this.state.data){
-            console.log("calling plot");
-            plotBarChart(this.state.data,this.state.regions,this.props.year,this.props.region,this.node)
+        if(this.props.data){
+            const  plot = plotBarChart(this.props.data, this.props.year, this.props.region, this.props.dataType, this.node)
+            this.setState({plot:plot});
         }
     }
 
     componentDidUpdate() {
-        if(this.state.data){
-            console.log("calling plot");
-            plotBarChart(this.state.data,this.state.regions,this.props.year,this.props.region,this.node)
+        if(this.state.plot){
+            if(this.props.year !== this.state.plot.year){
+                this.state.plot.updateYear(this.props.year);
+            } else if (this.props.region !== this.state.plot.region){
+                this.state.plot.updateRegion(this.props.region);
+            }
         }
     }
     render() {
-        console.log("rendering",this.props.region);
         return (
             <div className={this.props.className}>
                 <svg
                     id={this.props.id}
                     ref={node => this.node = node}
                     />
-                {(!this.state.data)&&<Spinner animation="border" role="status">
+                {(!this.state.plot)&&<Spinner
+                    className="spinner"
+                    animation="border"
+                    role="status">
                     <span className="sr-only">Loading...</span>
                 </Spinner>}
             </div>);

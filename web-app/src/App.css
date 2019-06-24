@@ -36,6 +36,11 @@
 }
 .datatype-select{
   width:500px;
+  height: 50px;
+}
+.dropdown{
+  align-items: center;
+  margin: 3px;
 }
 .map{
   width:500px;

@@ -1,7 +1,6 @@
 import {d3} from "../../Plotly";
 
 const plotGraphFrance = (data, nodeId, tooltipId, width, height) => {
-    console.log(data, nodeId, width, height);
     let root = data;
 
     var force = d3.layout.force()
@@ -109,7 +108,6 @@ const plotGraphFrance = (data, nodeId, tooltipId, width, height) => {
             if (!node.id) node.id = ++i;
             nodes.push(node);
         }
-        console.log("root:", root)
         recurse(root);
         return nodes;
     }
