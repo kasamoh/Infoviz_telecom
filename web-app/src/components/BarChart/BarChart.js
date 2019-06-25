@@ -14,7 +14,8 @@ class BarChart extends React.Component{
 
     componentDidMount() {
         if(this.props.data){
-            const  plot = plotBarChart(this.props.data, this.props.year, this.props.region, this.props.dataType, this.node)
+            const  plot = plotBarChart(this.props.data, this.props.year, this.props.region, this.props.dataType,
+                this.node, this.props.width, this.props.height);
             this.setState({plot:plot});
         }
     }
@@ -34,6 +35,8 @@ class BarChart extends React.Component{
                 <svg
                     id={this.props.id}
                     ref={node => this.node = node}
+                    width={this.props.width}
+                    height={this.props.height}
                     />
                 {(!this.state.plot)&&<Spinner
                     className="spinner"

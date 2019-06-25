@@ -197,7 +197,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                             .style("opacity", .9);
                         d3.select("#" + svgId + "-d" + regionCode)
                             .style("stroke-width", "2")
-                            .style("stroke", "black")
+                            .style("stroke", colors[colors.length-1])
                             .style("opacity", 0.8)
                             .raise();
 
@@ -207,18 +207,39 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                             .style("top", (d3.event.pageY - 30) + "px");
                     })
                     .on("click", function (d) {
+                        if(plot.clicked){
+                            d3.select("#" + svgId + "-d" + plot.clicked)
+                                .style("fill", function (d) {
+                                    return colors[quantile(+val)];
+                                })
+                                .style("stroke-width", "1")
+                                .style("stroke", "white")
+                                .style("opacity", "1");
+                        }
+
                         const region = d.properties.code;
                         onRegionChange(region);
                         d3.select("#" + svgId + "-d" + regionCode)
                             .style("fill", function (d) {
                                 return colors[quantile(+val)];
                             })
-                            .style("stroke", "black");
+                            .style("stroke", colors[colors.length-1]);
                         tooltipDiv.html("")
                             .style("left", "-500px")
                             .style("top", "-500px");
+
+                        d3.select("#" + svgId + "-d" + regionCode)
+                            .style("stroke-width", "2")
+                            .attr("class", "clicked")
+                            .style("stroke", colors[colors.length-1])
+                            .style("opacity", 0.8)
+                            .raise();
+                        plot.clicked = regionCode;
                     })
                     .on("mouseout", function (d) {
+                        if(plot.clicked && d.properties.code === plot.clicked){
+                            return;
+                        }
                         d3.select("#" + svgId + "-d" + regionCode)
                             .style("fill", function (d) {
                                 return colors[quantile(+val)];
@@ -230,6 +251,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                         tooltipDiv.html("")
                             .style("left", "-500px")
                             .style("top", "-500px");
+
                     });
             });
         }

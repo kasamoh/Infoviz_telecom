@@ -1,17 +1,18 @@
 import * as d3 from "d3";
 
-const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, node) => {
+const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, node, initialWidth, initialHeight) => {
 
-    var svg = d3.select(node);
+    console.log(initialWidth, initialHeight);
+    const svg = d3.select(node);
     const svgId = node.id;
-    var margin = {
-        top: 10,
+    const margin = {
+        top: 20,
         right: 20,
-        bottom: 20,
-        left: 20
+        bottom: 10,
+        left: 35
     };
-    const width = 300 - margin.left - margin.right;
-    const height = 150 - margin.top - margin.bottom;
+    const width = initialWidth - margin.left - margin.right;
+    const height = initialHeight - 25 - margin.top - margin.bottom;
     console.log(height, width);
     svg.selectAll(".g").remove();
     svg.selectAll("g").remove();
@@ -34,22 +35,18 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
         .rangeRound([0, width])
         .padding(0.1);
 
-    var y = d3.scaleLinear()
-        .rangeRound([height-1, 1]);
-
-    var colorColumn = "typeshort";
-
     var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
     function bootstrapChart(){
 
         if(databar[plot.dataType].histogram !== 1){
-            console.log("No data for this type: ", plot.dataType);
             plot.filteredData = undefined;
             return;
         }
 
         const labels = Object.keys(databar[plot.dataType]).filter(l => l !== "Total" && l !== "histogram");
+
+        const ys = labels.map( l => d3.scaleLinear().rangeRound([height-10, 0]));
 
         plot.filteredData = databar[plot.dataType];
 
@@ -58,10 +55,16 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
             return plot.filteredData[l][plot.region][plot.year]
         });
 
+        const labelsValues = labels.map( l =>
+            Object.values(plot.filteredData[l]).map(o => Object.values(o)).reduce((ac,ar) => ac.concat(ar), [])
+        );
+
         colorScale.domain(values);
 
         x.domain(labels);
-        y.domain([d3.min(values), d3.max(values)]);
+        ys.forEach((y,i) => {
+            y.domain([d3.min(labelsValues[i]), d3.max(labelsValues[i])])
+        });
 
         g.selectAll("*").remove();
 
@@ -69,24 +72,14 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
 
-        g.append("g")
-            .call(d3.axisLeft(y))
-            .append("text")
-            .attr("id", svgId + "-bar-legend")
-            .attr("fill", "#000")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", "0.71em")
-            .attr("text-anchor", "end")
-            .text("Value");
-
+        const d3Data = labels.map((l,i) => ({
+            index:i,
+            label:l,
+            val: values[i]
+        }));
 
         g.selectAll(".bar")
-            .data(labels.map((l,i) => ({
-                index:i,
-                label:l,
-                val: values[i]
-            })))
+            .data(d3Data)
             .enter()
             .append("rect")
             .attr("id", d => svgId + "-bar-" + d.index)
@@ -97,21 +90,15 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
             .attr("x", function (d) {
                 return x(d.label);
             })
-            .attr("y", function (d) {
-                console.log(d.label, y(Number(d.val)));
-                return y(Number(d.val));
-            })
+            .attr("y", height)
+            .attr("height", 0)
             .attr("width", x.bandwidth())
-            .attr("height", function (d) {
-                return height - y(Number(d.val));
-            })
             .on("mouseover", function (d) {
                 tooltipDiv.transition()
                     .duration(200)
                     .style("opacity", .9);
 
-                tooltipDiv.html("<b>Production : </b>" + d.val + "<br>" +
-                    "<b>Type : </b>" + d.type)
+                tooltipDiv.html("<b>" +d.label+"</b><br><b>" + plot.dataType + "</b> : " + d.val)
                     .style("left", (d3.event.pageX + 30) + "px")
                     .style("top", (d3.event.pageY - 30) + "px");
             })
@@ -121,7 +108,10 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
                 tooltipDiv.html("")
                     .style("left", "-500px")
                     .style("top", "-500px");
-            });
+            }).transition()
+            .duration(500)
+            .attr("height", d => height - ys[d.index](Number(d.val)))
+            .attr("y", d => ys[d.index](Number(d.val)));
             
         function updateRegionYear(newRegionCode, newYear) {
             plot.region = newRegionCode;
@@ -138,48 +128,61 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
                 return plot.filteredData[l][plot.region][plot.year]
             });
 
-            colorScale.domain(values);
-            y.domain([d3.min(values), d3.max(values)]);
+//            colorScale.domain(values);
+//            y.domain([d3.min(values), d3.max(values)]);
 
-            labels.map((l,i) => ({
+            const d3Data = labels.map((l,i) => ({
                 index:i,
                 label:l,
                 val: values[i]
-            })).forEach(d => {
-                console.log(d);
+            }));
+            console.log(d3Data);
+            d3Data.forEach(d => {
+                console.log(d.label, d.index, d.val);
                 d3.select("#"+svgId + "-bar-" + d.index)
-                    .attr("fill", function (d) {
-                        console.log(d.label, colorScale(d.val));
-                        return colorScale(d.val);
-                    })
-                    .attr("y", function (d) {
-                        return y(Number(d.val));
-                    })
-                    .attr("height", function (d) {
-                        console.log(d.label, y(Number(d.val)));
-                        return height + 1 - y(Number(d.val));
-                    })
-
-            })
+                  .transition().delay((d, i) => i * 300)
+                    .duration(500)
+                    .attr("height", height + 1 - ys[d.index](d.val))
+                    .attr("y", ys[d.index](d.val));
+            });
         }
         plot.updateRegionYear = updateRegionYear;
 
     }
     function clean() {
-        g.selectAll("*").remove();
+
+        const labels = Object.keys(plot.filteredData).filter(l => l !== "Total" && l !== "histogram");
+        labels.forEach((d,i) => {
+            d3.select("#" + svgId + "-bar-" + i)
+                .transition()
+                .duration(500)
+                .attr("height", 0)
+                .attr("y", height);
+        });
+        g.transition()
+            .delay(200)
+            .duration(300)
+            .style("opacity",0);
+        setTimeout( () => g.selectAll("*").remove(), 500);
     }
     function updateDataType(newDataType){
-        plot.dataType = newDataType;
 
         if(databar[plot.dataType].histogram !== 1){
             console.log("No data for this type: ", plot.dataType);
+            plot.dataType = newDataType;
             plot.filteredData = undefined;
-            clean();
             return;
         }
+
+        if(plot.filteredData !== undefined){
+            clean();
+        }
+
+        plot.dataType = newDataType;
         plot.filteredData = databar[plot.dataType];
 
-        bootstrapChart()
+        setTimeout( bootstrapChart, 600);
+
 
     }
     plot.updateDataType = updateDataType;
