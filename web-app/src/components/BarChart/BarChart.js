@@ -21,10 +21,10 @@ class BarChart extends React.Component{
 
     componentDidUpdate() {
         if(this.state.plot){
-            if(this.props.year !== this.state.plot.year){
-                this.state.plot.updateYear(this.props.year);
-            } else if (this.props.region !== this.state.plot.region){
-                this.state.plot.updateRegion(this.props.region);
+            if(this.props.year !== this.state.plot.year || this.props.region !== this.state.plot.region){
+                this.state.plot.updateRegionYear(this.props.region, this.props.year);
+            } else if(this.props.dataType !== this.state.plot.dataType){
+                this.state.plot.updateDataType(this.props.dataType);
             }
         }
     }

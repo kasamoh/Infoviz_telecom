@@ -45,6 +45,7 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
 
         if(databar[plot.dataType].histogram !== 1){
             console.log("No data for this type: ", plot.dataType);
+            plot.filteredData = undefined;
             return;
         }
 
@@ -71,6 +72,7 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
         g.append("g")
             .call(d3.axisLeft(y))
             .append("text")
+            .attr("id", svgId + "-bar-legend")
             .attr("fill", "#000")
             .attr("transform", "rotate(-90)")
             .attr("y", 6)
@@ -89,7 +91,6 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
             .append("rect")
             .attr("id", d => svgId + "-bar-" + d.index)
             .attr("fill", function (d) {
-                console.log(d.label, colorScale(d.val));
                 return colorScale(d.val);
             })
             //.attr("class", "bar")
@@ -122,43 +123,16 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
                     .style("top", "-500px");
             });
             
-        function updateRegion(newRegionCode) {
-            console.log("update region", newRegionCode);
+        function updateRegionYear(newRegionCode, newYear) {
             plot.region = newRegionCode;
-            const labels = Object.keys(databar[plot.dataType]).filter(l => l !== "Total" && l !== "histogram");
-
-            const values = labels.map( l => {
-                return plot.filteredData[l][plot.region][plot.year]
-            });
-
-            colorScale.domain(values);
-            y.domain([d3.min(values), d3.max(values)]);
-
-            labels.map((l,i) => ({
-                index:i,
-                label:l,
-                val: values[i]
-            })).forEach(d => {
-                console.log(d);
-                d3.select("#"+svgId + "-bar-" + d.index)
-                    .attr("fill", function (d) {
-                        console.log(d.label, colorScale(d.val));
-                        return colorScale(d.val);
-                    })
-                    .attr("y", function (d) {
-                        return y(Number(d.val));
-                    })
-                    .attr("height", function (d) {
-                        console.log(d.label, y(Number(d.val)));
-                        return height + 1 - y(Number(d.val));
-                    })
-
-            })
-        }
-
-        function updateYear(newYear) {
             plot.year = newYear;
-            const labels = Object.keys(databar[plot.dataType]).filter(l => l !== "Total" && l !== "histogram");
+
+            if(plot.filteredData === undefined){
+                console.log("No data for this type: ", plot.dataType);
+                return;
+            }
+
+            const labels = Object.keys(plot.filteredData).filter(l => l !== "Total" && l !== "histogram");
 
             const values = labels.map( l => {
                 return plot.filteredData[l][plot.region][plot.year]
@@ -185,13 +159,30 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
                         console.log(d.label, y(Number(d.val)));
                         return height + 1 - y(Number(d.val));
                     })
+
             })
         }
-
-        plot.updateRegion = updateRegion;
-        plot.updateYear = updateYear;
+        plot.updateRegionYear = updateRegionYear;
 
     }
+    function clean() {
+        g.selectAll("*").remove();
+    }
+    function updateDataType(newDataType){
+        plot.dataType = newDataType;
+
+        if(databar[plot.dataType].histogram !== 1){
+            console.log("No data for this type: ", plot.dataType);
+            plot.filteredData = undefined;
+            clean();
+            return;
+        }
+        plot.filteredData = databar[plot.dataType];
+
+        bootstrapChart()
+
+    }
+    plot.updateDataType = updateDataType;
 
     bootstrapChart();
     plot.ready = true;
