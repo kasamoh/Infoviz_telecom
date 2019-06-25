@@ -28,7 +28,13 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
     function selecColor(selectedDataType) {
         switch(selectedDataType) {
           case 'Excedent':
-              return ['#006aff', '#4190ff', '#7cb2ff', '#b8d5ff', '#ffffff', '#ffc3c3', '#ff9494', '#ff5555', '#ff0000']
+              return ['#006aff','#006aff', '#4190ff','#4190ff', '#7cb2ff','#7cb2ff', '#b8d5ff', '#dadada','#dadada', '#ffc3c3','#ff9494', '#ff9494','#ff5555', '#ff5555', '#ff0000', '#ff0000']
+          case 'ConsommationTotal':
+              return ['#fff3e6','#fff3e6','#ffecd9', '#ffe4c9','#ffdcb8', '#ffd5a9', '#ffce9b','#ffc68b', '#ffbe7b','#ffb76c', '#ffae59','#ff9f3b', '#ff9526', '#ff8c13', '#ff8300','#ff8300']
+          case 'ConsommationMoyenne':
+              return ['#fff3e6','#fff3e6','#ffecd9', '#ffe4c9','#ffdcb8', '#ffd5a9', '#ffce9b','#ffc68b', '#ffbe7b','#ffb76c', '#ffae59','#ff9f3b', '#ff9526', '#ff8c13', '#ff8300','#ff8300']
+          case 'ProductionCO2':
+              return ['#f9f9f9','#e1e1e1', '#d0d0d0','#b7b7b7', '#a7a7a7','#8e8e8e', '#757575', '#5b5b5b','#404040', '#262626','#151515', '#000000']
           default:
             return ['#d4eac7', '#c6e3b5', '#b7dda2', '#a9d68f', '#9bcf7d', '#8cc86a', '#7ec157', '#77be4e', '#70ba45', '#65a83e', '#599537', '#4e8230', '#437029', '#385d22', '#2d4a1c', '#223815'];
         }
