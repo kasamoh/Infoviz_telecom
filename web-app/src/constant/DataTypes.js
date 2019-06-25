@@ -14,7 +14,7 @@ const EXCESS = {
 };
 
 const PRODUCTION_CO2 = {
-    label: "Production CO2 Emission",
+    label: "Production CO2",
     key: "ProductionCO2"
 };
 
