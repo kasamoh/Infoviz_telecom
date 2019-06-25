@@ -24,11 +24,15 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
     while (svg.firstChild) {
         svg.firstChild.remove();
     }
-
-    function selecColor(selectedDataType) {
+    console.log('TEEEEST',selectedDataType)
+    function selecColor({selectedDataType}) {
         switch(selectedDataType) {
           case 'Excedent':
               return ['#006aff', '#4190ff', '#7cb2ff', '#b8d5ff', '#ffffff', '#ffc3c3', '#ff9494', '#ff5555', '#ff0000']
+          case 'ProductionCO2':
+              return ['#f6f6f6', '#cccccc', '#a8a8a8', '#818181', '#616161', '#404040', '#000000']
+           case 'ProductionTotale':
+                return ['#fff7f0', '#ffe0c4', '#ffc795', '#ffb069', '#ff9b41', '#ff8a21', '#ff7900']
           default:
             return ['#d4eac7', '#c6e3b5', '#b7dda2', '#a9d68f', '#9bcf7d', '#8cc86a', '#7ec157', '#77be4e', '#70ba45', '#65a83e', '#599537', '#4e8230', '#437029', '#385d22', '#2d4a1c', '#223815'];
         }
