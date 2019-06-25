@@ -185,24 +185,30 @@ class App extends React.Component {
                                                         </Accordion.Toggle>
                                                     </Col>
                                                     </Row>
-                                                    <MapFrance className="map"
-                                                        id={"map-france-1"}
-                                                        width={500}
-                                                        height={500}
-                                                        year={this.state.year}
-                                                        data={allData}
-                                                        dataType={this.state.dataType1.key}
-                                                        onRegionChange={this.onRegion1Change}
-                                                    />
-                                                    <BarChart className="histogram"
-                                                        id={"barchart-1"}
-                                                        width={400}
-                                                        height={200}
-                                                        region={this.state.region1}
-                                                        data={allData}
-                                                        dataType={this.state.dataType1.key}
-                                                        year={this.state.year}
-                                                    />
+                                                    <div className="map">
+                                                        <h3><b>{this.state.dataType1.label}</b>  colorpleth</h3>
+                                                        <MapFrance
+                                                                   id={"map-france-1"}
+                                                                   width={500}
+                                                                   height={500}
+                                                                   year={this.state.year}
+                                                                   data={allData}
+                                                                   dataType={this.state.dataType1.key}
+                                                                   onRegionChange={this.onRegion1Change}
+                                                        />
+                                                    </div>
+                                                    <div className="histogram">
+                                                        <h3>{this.state.dataType1.label} per sectors</h3>
+                                                        <BarChart
+                                                                  id={"barchart-1"}
+                                                                  width={400}
+                                                                  height={200}
+                                                                  region={this.state.region1}
+                                                                  data={allData}
+                                                                  dataType={this.state.dataType1.key}
+                                                                  year={this.state.year}
+                                                        />
+                                                    </div>
                                                 </Col>
                                                 <Accordion.Collapse eventKey="0">
                                                     {this.state.showCompare && (
@@ -229,7 +235,9 @@ class App extends React.Component {
                                                                     </Dropdown>
                                                                 </Col>
                                                             </Row>
-                                                            <MapFrance className="map"
+                                                            <div className="map">
+                                                                <h3><b>{this.state.dataType2.label}</b>  colorpleth</h3>
+                                                                <MapFrance
                                                                        id={"map-france-2"}
                                                                        width={500}
                                                                        height={500}
@@ -237,7 +245,8 @@ class App extends React.Component {
                                                                        data={allData}
                                                                        dataType={this.state.dataType2.key}
                                                                        onRegionChange={this.onRegion2Change}
-                                                            />
+                                                                />
+                                                            </div>
                                                             <BarChart className="histogram"
                                                                       id={"barchart-2"}
                                                                       width={400}

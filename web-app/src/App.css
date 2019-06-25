@@ -52,7 +52,7 @@ ul{
 }
 .histogram{
   width:500px;
-  height:200px;
+  height:250px;
   border: 1px solid #e2e2e2;
   border-radius: 3px;
 }
@@ -66,11 +66,21 @@ ul{
 }
 .map{
   width:500px;
-  height:500px;
+  height:550px;
   background: #fff;
   border: 1px solid #e2e2e2;
   border-radius: 3px;
   margin-bottom: 10px;
+}
+h3{
+  font-family: Arial;
+  font-size: 18px;
+  font-weight: 600;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  color: #666;
+  border-bottom: 1px solid #d7d7d7;
 }
 .rangeslider__label-item{
   transform: translate3d(0, -80%, 0)!important;

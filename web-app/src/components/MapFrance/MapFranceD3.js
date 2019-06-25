@@ -192,19 +192,23 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
 
                     ///////////////// mouselick ///////
                     .on("mouseover", function (d) {
-                        tooltipDiv.transition()
-                            .duration(200)
-                            .style("opacity", .9);
-                        d3.select("#" + svgId + "-d" + regionCode)
-                            .style("stroke-width", "2")
-                            .style("stroke", colors[colors.length-1])
-                            .style("opacity", 0.8)
-                            .raise();
-
                         tooltipDiv.html("<b>Région : </b>" + availableRegionNames[regionCode] + "<br>"
                             + "<b>Production : </b>" + val + "<br>")
                             .style("left", (d3.event.pageX + 30) + "px")
                             .style("top", (d3.event.pageY - 30) + "px");
+
+                        if(plot.clicked && d.properties.code === plot.clicked){
+                            return;
+                        }
+
+                        tooltipDiv.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        d3.select("#" + svgId + "-d" + regionCode)
+                            .style("stroke-width", "1")
+                            .style("stroke", colors[colors.length-1])
+                            .style("opacity", 0.8)
+                            .raise();
                     })
                     .on("click", function (d) {
                         if(plot.clicked){
@@ -229,9 +233,9 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                             .style("top", "-500px");
 
                         d3.select("#" + svgId + "-d" + regionCode)
-                            .style("stroke-width", "2")
                             .attr("class", "clicked")
                             .style("stroke", colors[colors.length-1])
+                            .style("stroke-width", "3")
                             .style("opacity", 0.8)
                             .raise();
                         plot.clicked = regionCode;
@@ -240,6 +244,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                         if(plot.clicked && d.properties.code === plot.clicked){
                             return;
                         }
+
                         d3.select("#" + svgId + "-d" + regionCode)
                             .style("fill", function (d) {
                                 return colors[quantile(+val)];
@@ -252,6 +257,12 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                             .style("left", "-500px")
                             .style("top", "-500px");
 
+                        if(plot.clicked){
+                            d3.select("#" + svgId + "-d" + plot.clicked)
+                                .raise();
+                        }
+
+
                     });
             });
         }
@@ -259,9 +270,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
 
         const updateDataType = (newDataType) => {
             plot.dataType = newDataType;
-            console.log("ftatyyyyyyyyyyyyyyyyyyyyyyyp")
-            console.log(newDataType)
-            colors = selecColor(newDataType)
+            colors = selecColor(newDataType);
             plot.filteredData =  data[newDataType]["Total"];
             updateColorScale(plot.filteredData);
             updateLegend(plot.filteredData);
@@ -274,6 +283,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
             updateMapEvents()
         };
 
+
         const updateYear = (newYear) => {
             plot.year = newYear;
             availableRegion.forEach(function (regionCode) {
@@ -282,7 +292,15 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                     .style("fill", colors[quantile(+val)])
                     .attr("class", "region q" + quantile(+val) + "-9");
             });
-            updateMapEvents()
+            updateMapEvents();
+
+            if(plot.clicked){
+                d3.select("#" + svgId + "-d" + plot.clicked)
+                    .style("stroke", colors[colors.length-1])
+                    .style("stroke-width", "3")
+                    .style("opacity", 0.8)
+                    .raise();
+            }
         };
 
         d3.select("select").on("change", function () {
