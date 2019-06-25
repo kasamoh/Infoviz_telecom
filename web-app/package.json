@@ -9,7 +9,7 @@
     "d3-legend": "^1.0.0",
     "d3-scale-chromatic": "^1.3.3",
     "d3-svg-legend": "^2.25.6",
-    "plotly.js": "1.45.3",
+    "plotly.js": "^1.45.3",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.9",
     "react-dom": "^16.8.6",
