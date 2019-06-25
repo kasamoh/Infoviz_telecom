@@ -16,7 +16,7 @@ header h1{
   border-radius: 3px;
   background: #f8f8f8;
   width:1500px;
-  height:950px;
+  height:1020px;
   display: flex;
   justify-content: left;
 }
@@ -72,6 +72,14 @@ ul{
   border-radius: 3px;
   margin-bottom: 10px;
 }
+.graph{
+  width:1100px;
+  height:700px;
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
 h3{
   font-family: Arial;
   font-size: 18px;
@@ -86,6 +94,7 @@ h3{
   transform: translate3d(0, -80%, 0)!important;
   height: 30px!important;
   top: 2px !important;
+  margin-bottom: 5px!important;
 }
 .rangeslider{
   width:80%;

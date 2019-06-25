@@ -44,13 +44,11 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
             return;
         }
 
-        const labels = Object.keys(databar[plot.dataType]).filter(l => l !== "Total" && l !== "histogram");
+        plot.filteredData = databar[plot.dataType];
+        const labels = Object.keys(plot.filteredData).filter(l => l !== "Total" && l !== "histogram");
 
         const ys = labels.map( l => d3.scaleLinear().rangeRound([height-10, 0]));
 
-        plot.filteredData = databar[plot.dataType];
-
-        console.log(plot.filteredData);
         const values = labels.map( l => {
             return plot.filteredData[l][plot.region][plot.year]
         });
@@ -67,6 +65,10 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
         });
 
         g.selectAll("*").remove();
+
+        g.transition()
+            .duration(200)
+            .style("opacity",1);
 
         g.append("g")
             .attr("transform", "translate(0," + height + ")")
@@ -108,11 +110,12 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
                 tooltipDiv.html("")
                     .style("left", "-500px")
                     .style("top", "-500px");
-            }).transition()
+            })
+            .transition()
             .duration(500)
             .attr("height", d => height - ys[d.index](Number(d.val)))
             .attr("y", d => ys[d.index](Number(d.val)));
-            
+
         function updateRegionYear(newRegionCode, newYear) {
             plot.region = newRegionCode;
             plot.year = newYear;
@@ -149,41 +152,55 @@ const plotBarChart = (databar, selectedYear, selectedRegion, selectedDataType, n
         plot.updateRegionYear = updateRegionYear;
 
     }
+    function noDetails() {
+        g.selectAll("*").remove();
+        g.transition()
+            .duration(200)
+            .style("opacity",1);
+        g.append("text")
+            .attr("x", 10)
+            .attr("y", height/2)
+            .attr("dy", ".85em")
+            .style("font-size", "24px")
+            .transition()
+            .duration(500)
+            .style("opacity",1)
+    .text("No sector details for this data type");
+        console.log("appended text to g");
+    }
     function clean() {
 
         const labels = Object.keys(plot.filteredData).filter(l => l !== "Total" && l !== "histogram");
         labels.forEach((d,i) => {
             d3.select("#" + svgId + "-bar-" + i)
                 .transition()
-                .duration(500)
+                .duration(400)
                 .attr("height", 0)
                 .attr("y", height);
         });
         g.transition()
-            .delay(200)
-            .duration(300)
+            .delay(300)
+            .duration(200)
             .style("opacity",0);
         setTimeout( () => g.selectAll("*").remove(), 500);
     }
     function updateDataType(newDataType){
 
-        if(databar[plot.dataType].histogram !== 1){
-            console.log("No data for this type: ", plot.dataType);
-            plot.dataType = newDataType;
-            plot.filteredData = undefined;
-            return;
-        }
+        plot.dataType = newDataType;
 
         if(plot.filteredData !== undefined){
             clean();
         }
 
-        plot.dataType = newDataType;
+        if(databar[newDataType].histogram !== 1){
+            console.log("No data for this type: ", plot.dataType);
+            plot.filteredData = undefined;
+            setTimeout( noDetails, 500);
+            return;
+        }
+
         plot.filteredData = databar[plot.dataType];
-
-        setTimeout( bootstrapChart, 600);
-
-
+        setTimeout( bootstrapChart, 500);
     }
     plot.updateDataType = updateDataType;
 

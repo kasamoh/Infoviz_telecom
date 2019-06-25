@@ -4,7 +4,7 @@ const plotGraphFrance = (data, nodeId, tooltipId, width, height) => {
     let root = data;
 
     var force = d3.layout.force()
-        .linkDistance(80)
+        .linkDistance(150)
         .charge(-120)
         .gravity(.05)
         .size([width, height])
@@ -49,7 +49,7 @@ const plotGraphFrance = (data, nodeId, tooltipId, width, height) => {
 
         nodeEnter.append("circle")
         //.attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; });
-            .attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; })
+            .attr("r", function(d) { return Math.sqrt(d.size) / 5 || 4.5; })
             .on('mouseover.graph-tooltip', function(d) {
                 tooltip.transition()
                     .duration(300)

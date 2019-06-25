@@ -18,6 +18,7 @@ import Col from "react-bootstrap/Col";
 import Dropdown from "react-bootstrap/Dropdown";
 import Accordion from "react-bootstrap/Accordion";
 import allData from "./data/all_map"
+import regions from "./data/regions";
 
 const MIN_YEAR = 2013, MAX_YEAR = 2017;
 
@@ -33,6 +34,7 @@ class App extends React.Component {
             region2: 11,
             dataType1: datatypes[0],
             dataType2: datatypes[1],
+            graphDataType: "conso",
             showCompare: "1"
         };
         this.onYearChange = this.onYearChange.bind(this);
@@ -42,6 +44,7 @@ class App extends React.Component {
         this.onRegion2Change = this.onRegion2Change.bind(this);
         this.onDataType1Select = this.onDataType1Select.bind(this);
         this.onDataType2Select = this.onDataType2Select.bind(this);
+        this.onGraphDataTypeSelect = this.onGraphDataTypeSelect.bind(this);
         this.onCompareButton = this.onCompareButton.bind(this);
     }
 
@@ -84,23 +87,23 @@ class App extends React.Component {
     }
 
     onRegion1Change(newRegion) {
-        console.log("State new region", newRegion);
         this.setState({region1: newRegion});
     }
 
     onRegion2Change(newRegion) {
-        console.log("State new region", newRegion);
         this.setState({region2: newRegion});
     }
 
     onDataType1Select(newDataType){
-        console.log("State new DataType1", newDataType);
         this.setState({dataType1: newDataType});
     }
 
     onDataType2Select(newDataType){
-        console.log("State new DataType2", newDataType);
         this.setState({dataType2: newDataType});
+    }
+
+    onGraphDataTypeSelect(newDataType){
+        this.setState({graphDataType: newDataType});
     }
 
     onCompareButton(){
@@ -198,7 +201,9 @@ class App extends React.Component {
                                                         />
                                                     </div>
                                                     <div className="histogram">
-                                                        <h3>{this.state.dataType1.label} per sectors</h3>
+                                                        <h3>{this.state.dataType1.label} per sectors:<b>{
+                                                            this.state.region1.toString() in regions &&
+                                                            regions[this.state.region1.toString()].name}</b></h3>
                                                         <BarChart
                                                                   id={"barchart-1"}
                                                                   width={400}
@@ -247,7 +252,9 @@ class App extends React.Component {
                                                                        onRegionChange={this.onRegion2Change}
                                                                 />
                                                             </div>
-                                                            <BarChart className="histogram"
+                                                            <div className="histogram">
+                                                                <h3>{this.state.dataType2.label} per sectors</h3>
+                                                                <BarChart
                                                                       id={"barchart-2"}
                                                                       width={400}
                                                                       height={200}
@@ -256,6 +263,7 @@ class App extends React.Component {
                                                                       region={this.state.region2}
                                                                       year={this.state.year}
                                                             />
+                                                            </div>
                                                         </Col>
                                                     )}
                                             </Accordion.Collapse>
@@ -264,11 +272,43 @@ class App extends React.Component {
                                         </Container>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey={GRAPH_TAB}>
+                                        <Col>
+                                            <Row className={"datatype-select"}>
+                                                <Col md={4}>
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle variant="success" id="dropdown-datatype-1"
+                                                                         className={"dropdown"}>
+                                                            {this.state.graphDataType === "conso"?"Consumption":"Production"}
+                                                        </Dropdown.Toggle>
+
+                                                        <Dropdown.Menu
+                                                            alignRight={true}>
+
+                                                            <Dropdown.Item
+                                                                key={0}
+                                                                eventKey={"0"}
+                                                                onSelect={() => this.onGraphDataTypeSelect("conso")}
+                                                            >Energy consumption</Dropdown.Item>
+                                                            <Dropdown.Item
+                                                                key={1}
+                                                                eventKey={"1"}
+                                                                onSelect={() => this.onGraphDataTypeSelect("prod")}
+                                                            >Energy production</Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </Col>
+
+                                            </Row>
+                                        </Col>
+                                                <div className="graph">
+                                            <h3>Energy consumption graph</h3>
                                         <GraphFrance
-                                            width={600}
-                                            height={600}
+                                            width={1200}
+                                            height={700}
+                                            dataType={this.state.graphDataType}
                                             year={this.state.year}
                                         />
+                                        </div>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Tab.Container>

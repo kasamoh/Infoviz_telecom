@@ -26,28 +26,32 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
     }
 
     function selecColor(selectedDataType) {
-        switch(selectedDataType) {
-          case 'Excedent':
-              return ['#006aff','#006aff', '#4190ff','#4190ff', '#7cb2ff','#7cb2ff', '#b8d5ff', '#dadada','#dadada', '#ffc3c3','#ff9494', '#ff9494','#ff5555', '#ff5555', '#ff0000', '#ff0000']
-          case 'ConsommationTotal':
-              return ['#fff3e6','#fff3e6','#ffecd9', '#ffe4c9','#ffdcb8', '#ffd5a9', '#ffce9b','#ffc68b', '#ffbe7b','#ffb76c', '#ffae59','#ff9f3b', '#ff9526', '#ff8c13', '#ff8300','#ff8300']
-          case 'ConsommationMoyenne':
-              return ['#fff3e6','#fff3e6','#ffecd9', '#ffe4c9','#ffdcb8', '#ffd5a9', '#ffce9b','#ffc68b', '#ffbe7b','#ffb76c', '#ffae59','#ff9f3b', '#ff9526', '#ff8c13', '#ff8300','#ff8300']
-          case 'ProductionCO2':
-              return ['#f9f9f9','#e1e1e1', '#d0d0d0','#b7b7b7', '#a7a7a7','#8e8e8e', '#757575', '#5b5b5b','#404040', '#262626','#151515', '#000000']
-          default:
-            return ['#d4eac7', '#c6e3b5', '#b7dda2', '#a9d68f', '#9bcf7d', '#8cc86a', '#7ec157', '#77be4e', '#70ba45', '#65a83e', '#599537', '#4e8230', '#437029', '#385d22', '#2d4a1c', '#223815'];
+        console.log(selectedDataType);
+        switch (selectedDataType) {
+            case 'Excedent':
+                return ['#006aff', '#006aff', '#4190ff', '#4190ff', '#7cb2ff', '#7cb2ff', '#b8d5ff', '#dadada', '#dadada', '#ffc3c3', '#ff9494', '#ff9494', '#ff5555', '#ff5555', '#ff0000', '#ff0000'];
+            case 'ConsommationTotal':
+            case "AgricultureMoyenne":
+            case "IndustrieMoyenne":
+            case "TertiaireMoyenne":
+            case "RésidentielMoyenne":
+            case "AutreMoyenne":
+                return ['#fff3e6', '#fff3e6', '#ffecd9', '#ffe4c9', '#ffdcb8', '#ffd5a9', '#ffce9b', '#ffc68b', '#ffbe7b', '#ffb76c', '#ffae59', '#ff9f3b', '#ff9526', '#ff8c13', '#ff8300', '#ff8300'];
+            case 'ConsommationMoyenne':
+                return ['#fff3e6', '#fff3e6', '#ffecd9', '#ffe4c9', '#ffdcb8', '#ffd5a9', '#ffce9b', '#ffc68b', '#ffbe7b', '#ffb76c', '#ffae59', '#ff9f3b', '#ff9526', '#ff8c13', '#ff8300', '#ff8300'];
+            case 'ProductionCO2':
+                return ['#f9f9f9', '#e1e1e1', '#d0d0d0', '#b7b7b7', '#a7a7a7', '#8e8e8e', '#757575', '#5b5b5b', '#404040', '#262626', '#151515', '#000000'];
+            default:
+                return ['#d4eac7', '#c6e3b5', '#b7dda2', '#a9d68f', '#9bcf7d', '#8cc86a', '#7ec157', '#77be4e', '#70ba45', '#65a83e', '#599537', '#4e8230', '#437029', '#385d22', '#2d4a1c', '#223815'];
         }
-      }
-
-
+    }
 
 
     const deps = svg.append("g");
     //const colors = ['#d4eac7', '#c6e3b5', '#b7dda2', '#a9d68f', '#9bcf7d', '#8cc86a', '#7ec157', '#77be4e', '#70ba45', '#65a83e', '#599537', '#4e8230', '#437029', '#385d22', '#2d4a1c', '#223815'];
     //const colors = ['#006aff', '#4190ff', '#7cb2ff', '#b8d5ff', '#ffffff', '#ffc3c3', '#ff9494', '#ff5555', '#ff0000'];
 
-    var colors = selecColor(selectedDataType)
+    var colors = selecColor(selectedDataType);
     const plot = {};
     plot.year = selectedyear;
     plot.dataType = selectedDataType;
@@ -86,7 +90,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
             .domain([minProduction, maxProduction])
             .range(d3.range(colors.length));
 
-        function updateColorScale(filteredData){
+        function updateColorScale(filteredData) {
             const allValues = Object.values(filteredData)
                 .map(region => Object.values(region))
                 .reduce((acc, arr) => acc.concat(arr), []);
@@ -131,7 +135,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
             .call(d3.axisRight(legendScale).ticks(NBR_TICKS));
 
 
-        function updateLegend(filteredData){
+        function updateLegend(filteredData) {
             const allValues = Object.values(filteredData)
                 .map(region => Object.values(region))
                 .reduce((acc, arr) => acc.concat(arr), []);
@@ -171,6 +175,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                 .call(d3.axisRight(legendScale).ticks(NBR_TICKS));
 
         }
+
         //////////////////////////////////////// tooltip /////////////////////////
 
         const tooltipDiv = d3.select("body").append("div")
@@ -197,7 +202,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                             .style("left", (d3.event.pageX + 30) + "px")
                             .style("top", (d3.event.pageY - 30) + "px");
 
-                        if(plot.clicked && d.properties.code === plot.clicked){
+                        if (plot.clicked && d.properties.code === plot.clicked) {
                             return;
                         }
 
@@ -205,18 +210,18 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                             .duration(200)
                             .style("opacity", .9);
                         d3.select("#" + svgId + "-d" + regionCode)
-                            .style("stroke-width", "1")
-                            .style("stroke", colors[colors.length-1])
+                            .style("stroke-width", "2")
+                            .style("stroke", colors[colors.length - 1])
                             .style("opacity", 0.8)
                             .raise();
                     })
                     .on("click", function (d) {
-                        if(plot.clicked){
+                        if (plot.clicked) {
                             d3.select("#" + svgId + "-d" + plot.clicked)
                                 .style("fill", function (d) {
                                     return colors[quantile(+val)];
                                 })
-                                .style("stroke-width", "1")
+                                .style("stroke-width", "2")
                                 .style("stroke", "white")
                                 .style("opacity", "1");
                         }
@@ -227,21 +232,21 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                             .style("fill", function (d) {
                                 return colors[quantile(+val)];
                             })
-                            .style("stroke", colors[colors.length-1]);
+                            .style("stroke", colors[colors.length - 1]);
                         tooltipDiv.html("")
                             .style("left", "-500px")
                             .style("top", "-500px");
 
                         d3.select("#" + svgId + "-d" + regionCode)
                             .attr("class", "clicked")
-                            .style("stroke", colors[colors.length-1])
+                            .style("stroke", colors[colors.length - 1])
                             .style("stroke-width", "3")
                             .style("opacity", 0.8)
                             .raise();
                         plot.clicked = regionCode;
                     })
                     .on("mouseout", function (d) {
-                        if(plot.clicked && d.properties.code === plot.clicked){
+                        if (plot.clicked && d.properties.code === plot.clicked) {
                             return;
                         }
 
@@ -249,7 +254,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                             .style("fill", function (d) {
                                 return colors[quantile(+val)];
                             })
-                            .style("stroke-width", "1")
+                            .style("stroke-width", "2")
                             .style("stroke", "white")
                             .style("opacity", "1");
                         //div.style("opacity", 0);
@@ -257,7 +262,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                             .style("left", "-500px")
                             .style("top", "-500px");
 
-                        if(plot.clicked){
+                        if (plot.clicked) {
                             d3.select("#" + svgId + "-d" + plot.clicked)
                                 .raise();
                         }
@@ -266,12 +271,13 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                     });
             });
         }
+
         updateMapEvents();
 
         const updateDataType = (newDataType) => {
             plot.dataType = newDataType;
             colors = selecColor(newDataType);
-            plot.filteredData =  data[newDataType]["Total"];
+            plot.filteredData = data[newDataType]["Total"];
             updateColorScale(plot.filteredData);
             updateLegend(plot.filteredData);
             availableRegion.forEach(function (regionCode) {
@@ -294,9 +300,9 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
             });
             updateMapEvents();
 
-            if(plot.clicked){
+            if (plot.clicked) {
                 d3.select("#" + svgId + "-d" + plot.clicked)
-                    .style("stroke", colors[colors.length-1])
+                    .style("stroke", colors[colors.length - 1])
                     .style("stroke-width", "3")
                     .style("opacity", 0.8)
                     .raise();
