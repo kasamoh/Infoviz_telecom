@@ -172,14 +172,16 @@ class App extends React.Component {
                                                         </Dropdown.Menu>
                                                     </Dropdown>
                                                     </Col>
-                                                    <Col md={{span:4, offset:4}}>
+                                                    <Col md={{span:8, offset:0}}>
                                                         <Accordion.Toggle
                                                             as={Button}
                                                             variant="link"
                                                             eventKey="0"
-                                                            onClick={this.onCompareButton}
-                                                        >
-                                                            {this.state.showCompare === "0"?"Hide second map":"Compare in second map"}
+                                                            onClick={this.onCompareButton}>
+                                                            <Button
+                                                                className={"second-map-button"}
+                                                                variant={this.state.showCompare === "0"?"warning":"primary"}>
+                                                                {this.state.showCompare === "0"?"Hide":"Compare"}</Button>
                                                         </Accordion.Toggle>
                                                     </Col>
                                                     </Row>
