@@ -12,7 +12,7 @@ import prod13 from "../../data/graph_production_2013"
 import prod14 from "../../data/graph_production_2014"
 import prod15 from "../../data/graph_production_2015"
 //import prod16 from "../../data/graph_production_2016"
-import prod17 from "../../data/graph_production_2012"
+import prod17 from "../../data/graph_production_2017"
 import "./Styles.css"
 
 const datas = {
@@ -30,7 +30,7 @@ const datas = {
         2014:prod14,
         2015:prod15,
 //        2016:prod16,
-//        2017:prod17,
+        2017:prod17,
     }
 };
 
