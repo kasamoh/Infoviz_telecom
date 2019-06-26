@@ -82,13 +82,16 @@ ul{
 }
 h3{
   font-family: Arial;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   height: 50px;
   text-align: center;
   line-height: 50px;
   color: #666;
   border-bottom: 1px solid #d7d7d7;
+}
+.map h3{
+  font-size: 18px;
 }
 .rangeslider__label-item{
   transform: translate3d(0, -80%, 0)!important;

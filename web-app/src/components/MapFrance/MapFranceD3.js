@@ -198,7 +198,7 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                     ///////////////// mouselick ///////
                     .on("mouseover", function (d) {
                         tooltipDiv.html("<b>Région : </b>" + availableRegionNames[regionCode] + "<br>"
-                            + "<b>Production : </b>" + val + "<br>")
+                            + "<b>Production : </b>" + val.toFixed(2) + "<br>")
                             .style("left", (d3.event.pageX + 30) + "px")
                             .style("top", (d3.event.pageY - 30) + "px");
 
@@ -218,9 +218,6 @@ const plotMapFrance = (data, geojson, selectedyear, selectedDataType, node, widt
                     .on("click", function (d) {
                         if (plot.clicked) {
                             d3.select("#" + svgId + "-d" + plot.clicked)
-                                .style("fill", function (d) {
-                                    return colors[quantile(+val)];
-                                })
                                 .style("stroke-width", "2")
                                 .style("stroke", "white")
                                 .style("opacity", "1");

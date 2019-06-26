@@ -189,7 +189,7 @@ class App extends React.Component {
                                                     </Col>
                                                     </Row>
                                                     <div className="map">
-                                                        <h3><b>{this.state.dataType1.label}</b>  colorpleth</h3>
+                                                        <h3><b>{this.state.dataType1.label}</b>  colorpleth (Mw)</h3>
                                                         <MapFrance
                                                                    id={"map-france-1"}
                                                                    width={500}
@@ -241,7 +241,7 @@ class App extends React.Component {
                                                                 </Col>
                                                             </Row>
                                                             <div className="map">
-                                                                <h3><b>{this.state.dataType2.label}</b>  colorpleth</h3>
+                                                                <h3><b>{this.state.dataType2.label}</b>  colorpleth (Mw)</h3>
                                                                 <MapFrance
                                                                        id={"map-france-2"}
                                                                        width={500}
@@ -253,7 +253,9 @@ class App extends React.Component {
                                                                 />
                                                             </div>
                                                             <div className="histogram">
-                                                                <h3>{this.state.dataType2.label} per sectors</h3>
+                                                                <h3>{this.state.dataType1.label} per sectors:<b>{
+                                                                    this.state.region1.toString() in regions &&
+                                                                    regions[this.state.region1.toString()].name}</b></h3>
                                                                 <BarChart
                                                                       id={"barchart-2"}
                                                                       width={400}
